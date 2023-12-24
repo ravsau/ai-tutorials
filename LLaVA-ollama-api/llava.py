@@ -4,6 +4,7 @@ import requests
 import base64
 import time
 import json
+import sys
 
 # note: including the start server code in this script for demo purposes. You might want to seperately start the server so that you're not starting the server every time you make the call. 
 def start_ollama_server():
@@ -53,4 +54,4 @@ if __name__ == "__main__":
 
     start_ollama_server()
     result = analyze_image(args.image, args.prompt)
-    print("Formatted Response:", result)
+    print(" Response:", result)
