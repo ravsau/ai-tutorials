@@ -51,7 +51,6 @@ EC2
   - Dev: Environment=development
   - Staging: Environment=staging
   - Prod: Environment=production
-- Keep SSH locked down by default.
 
 Serverless API
 - Lambda function: cloudyeti-greeting (Node.js 20 or Python 3.12)
