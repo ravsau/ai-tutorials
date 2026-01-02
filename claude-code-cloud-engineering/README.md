@@ -4,7 +4,11 @@
 
 A CloudYeti lab demonstrating how to manage AWS infrastructure using Claude Code, deploying EC2 + Lambda + API Gateway in one CloudFormation stack.
 
-📺 **Watch the video:** [YouTube Link]
+📺 **Watch the video( click image below):** 
+
+[![ChatGPT Image Jan 1, 2026, 06_26_16 PM Large](https://github.com/user-attachments/assets/8e7fc66e-15b6-43b9-8873-16fd5758bba4)](https://www.youtube.com/watch?v=XXXXXXXXXXX)
+
+
 
 ---
 
