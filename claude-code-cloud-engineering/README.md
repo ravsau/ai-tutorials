@@ -18,9 +18,9 @@ A CloudYeti lab demonstrating how to manage AWS infrastructure using Claude Code
 
 Using only natural language prompts, we'll:
 
-1. **Deploy Infrastructure** - VPC, EC2 instances, S3, CloudFront
+1. **Deploy EC2 Infrastructure** - VPC and EC2 instances via CloudFormation
 2. **Manage EC2** - Stop/start instances with safety guardrails
-3. **Deploy a Website** - Static site to S3 + CloudFront
+3. **Deploy a Serverless API** - Lambda + API Gateway
 4. **Bulk Operations** - Tag management across resources
 5. **Clean Up** - Tear everything down
 
@@ -37,10 +37,9 @@ Create and deploy a CloudFormation stack that includes:
 - A VPC with a public subnet
 - 3 EC2 instances: dev, staging, and prod (t3.micro, Amazon Linux 2023)
 - Tag them all with Lab=CloudYeti-AI-Engineering
-- Tag dev and staging with AutoStop=true
+- Tag dev and staging with AutoStop=true, Environment=development and Environment=staging
+- Tag prod with Environment=production
 - Enable termination protection on the prod instance only
-- An S3 bucket for static website hosting
-- A CloudFront distribution pointing to that bucket with OAC
 
 Name the stack "cloudyeti-ai-lab" and deploy it to us-east-1.
 
@@ -65,25 +64,29 @@ First show me what you're about to stop, then do it, then confirm they're stoppe
 Show me the status of all my lab instances in a nice table - instance ID, name, environment tag, and current state.
 ```
 
-### 4. Deploy Website
+### 4. Deploy Serverless API
 
 ```
-Create a sleek "Coming Soon" landing page for CloudYeti.
+Create and deploy a serverless API with the following:
 
-Requirements:
-- Dark mode, professional tech aesthetic
-- Animated background (subtle particles or gradients)
-- CloudYeti branding with mountain/yeti theme
-- Features: AWS Tutorials, AI Engineering, DevOps Labs
-- CTA button linking to youtube.com/@CloudYeti
-- Mobile responsive
+- A Lambda function called "cloudyeti-greeting" that:
+  - Takes a JSON body with a "name" field
+  - Returns a JSON response: {"message": "Hello {name}, welcome to CloudYeti! You're now an AI Engineer 🏔️"}
+  - If no name provided, return {"message": "Hello Cloud Engineer! Provide your name to get a personalized greeting."}
 
-Then upload it to my S3 bucket from the cloudyeti-ai-lab stack and invalidate the CloudFront cache.
+- An API Gateway HTTP API that triggers the Lambda
+- Give me the live endpoint URL when done
 
-Give me the live URL when done.
+Deploy everything to us-east-1 and tag with Lab=CloudYeti-AI-Engineering.
 ```
 
-### 5. Start Instance + Get SSH Info
+### 5. Test the API
+
+```
+Test the API for me - send a POST request with {"name": "CloudYeti"} and show me the response.
+```
+
+### 6. Start Instance + Get SSH Info
 
 ```
 Start my dev instance back up (the one tagged Environment=development).
@@ -94,7 +97,7 @@ Once it's running, show me:
 - How I would SSH into it (just show the command, I'll handle keys separately)
 ```
 
-### 6. Tag Audit & Bulk Update
+### 7. Tag Audit & Bulk Update
 
 ```
 Audit all my lab instances (Lab=CloudYeti-AI-Engineering).
@@ -106,15 +109,15 @@ Show me all their tags in a table, then add a new tag to ALL of them:
 Confirm when done.
 ```
 
-### 7. Cleanup
+### 8. Cleanup
 
 ```
 Alright, clean up time.
 
-Delete everything from the cloudyeti-ai-lab stack:
+Delete everything from the lab:
 1. First, disable termination protection on the prod instance
-2. Empty the S3 bucket (you can't delete a bucket with objects)
-3. Delete the CloudFormation stack
+2. Delete the cloudyeti-ai-lab CloudFormation stack
+3. Delete the Lambda function and API Gateway we created
 4. Verify everything is gone
 
 Don't leave any orphaned resources.
@@ -135,7 +138,7 @@ Don't leave any orphaned resources.
 
 - 🔗 [Claude Code Setup](https://code.claude.com/docs/en/setup)
 - 📺 [CloudYeti YouTube](https://youtube.com/@CloudYeti)
-- 📝 [Blog Post: Everyone is an AI Engineer](https://blog.saurav.io/everyone-is-an-ai-engineer/)
+- 📝 [Blog Post: Everyone is an AI Engineer](https://blog.saurav.io/everyone-is-an-ai-engineer)
 
 ---
 
