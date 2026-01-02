@@ -63,7 +63,7 @@ Serverless API
   - Route: POST /greet → Lambda
 
 General
-- Use default VPC + subnets
+- Use default VPC + subnets +Security group
 - Tag all resources with Lab=CloudYeti-AI-Engineering
 - Include reasonable CloudFormation Outputs
 
