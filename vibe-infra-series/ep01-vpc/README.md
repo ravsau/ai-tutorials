@@ -20,15 +20,15 @@ I describe the VPC I need to Claude Code, review the Terraform it generates, and
 ## Deploy
 
 ```bash
-export AWS_PROFILE=tutorial
 terraform init
 terraform apply
 ```
 
+> If you use named AWS CLI profiles, set `export AWS_PROFILE=<your-profile>` first.
+
 ## Destroy
 
 ```bash
-export AWS_PROFILE=tutorial
 terraform destroy
 ```
 
