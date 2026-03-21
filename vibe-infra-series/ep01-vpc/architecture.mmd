@@ -1,0 +1,66 @@
+graph TB
+    Internet((Internet))
+
+    subgraph AWS["AWS Account 247250656752 - us-east-1"]
+        subgraph VPC["VPC 10.0.0.0/16"]
+            IGW[Internet Gateway]
+
+            subgraph AZ1["us-east-1a"]
+                PubSub1["Public Subnet<br/>10.0.1.0/24<br/>Auto-assign Public IP"]
+                PrivSub1["Private Subnet<br/>10.0.3.0/24<br/>Fully Isolated"]
+            end
+
+            subgraph AZ2["us-east-1b"]
+                PubSub2["Public Subnet<br/>10.0.2.0/24<br/>Auto-assign Public IP"]
+                PrivSub2["Private Subnet<br/>10.0.4.0/24<br/>Fully Isolated"]
+            end
+
+            subgraph RouteTables["Route Tables"]
+                PubRT["Public RT<br/>0.0.0.0/0 → IGW"]
+                PrivRT["Private RT<br/>No internet route"]
+            end
+
+            subgraph SecurityGroups["Security Groups"]
+                WebSG["web-sg<br/>Inbound: 80, 443 from 0.0.0.0/0<br/>Outbound: All"]
+                AppSG["app-sg<br/>Inbound: 8080 from web-sg<br/>Outbound: All"]
+            end
+
+            subgraph Monitoring["Observability"]
+                FlowLogs["VPC Flow Logs"]
+                CWLogs["CloudWatch Logs<br/>7-day retention"]
+            end
+
+            EC2["EC2 t2.micro<br/>Apache httpd<br/>13.219.208.192"]
+        end
+    end
+
+    Internet -->|HTTP/HTTPS| IGW
+    IGW --- PubSub1
+    IGW --- PubSub2
+
+    PubRT -.->|routes| PubSub1
+    PubRT -.->|routes| PubSub2
+    PrivRT -.->|routes| PrivSub1
+    PrivRT -.->|routes| PrivSub2
+
+    WebSG -.->|protects| EC2
+    EC2 --- PubSub1
+
+    AppSG -.->|protects| PrivSub1
+    AppSG -.->|protects| PrivSub2
+
+    FlowLogs -->|sends to| CWLogs
+
+    style VPC fill:#e8f4f8,stroke:#2196F3,stroke-width:2px
+    style AZ1 fill:#fff3e0,stroke:#FF9800
+    style AZ2 fill:#fff3e0,stroke:#FF9800
+    style PubSub1 fill:#c8e6c9,stroke:#4CAF50
+    style PubSub2 fill:#c8e6c9,stroke:#4CAF50
+    style PrivSub1 fill:#ffcdd2,stroke:#f44336
+    style PrivSub2 fill:#ffcdd2,stroke:#f44336
+    style EC2 fill:#bbdefb,stroke:#1976D2,stroke-width:2px
+    style IGW fill:#fff9c4,stroke:#FBC02D
+    style WebSG fill:#e1bee7,stroke:#9C27B0
+    style AppSG fill:#e1bee7,stroke:#9C27B0
+    style FlowLogs fill:#f5f5f5,stroke:#9E9E9E
+    style CWLogs fill:#f5f5f5,stroke:#9E9E9E
