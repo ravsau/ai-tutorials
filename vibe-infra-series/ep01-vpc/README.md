@@ -34,4 +34,4 @@ terraform destroy
 
 ## Video
 
-Coming soon
+[![Watch on YouTube](https://img.youtube.com/vi/YYcPoaug5kQ/maxresdefault.jpg)](https://youtu.be/YYcPoaug5kQ)
