@@ -11,3 +11,9 @@ venv/
 # Env
 .env
 .env.*
+
+# Terraform
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
