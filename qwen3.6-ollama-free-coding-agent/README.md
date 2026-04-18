@@ -63,8 +63,10 @@ Type a prompt. If it responds, you're good. `/bye` to exit.
 
 ### 4. Install Qwen Code
 
+[Qwen Code](https://github.com/QwenLM/qwen-code) is an open-source agentic coding harness (like Claude Code) from the Qwen team.
+
 ```bash
-npm install -g @qwen-code/qwen-code
+bash -c "$(curl -fsSL https://qwen-code-assets.oss-cn-hangzhou.aliyuncs.com/installation/install-qwen.sh)"
 ```
 
 ### 5. Configure
