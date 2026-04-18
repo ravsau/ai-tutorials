@@ -95,10 +95,10 @@ launchctl setenv OLLAMA_CONTEXT_LENGTH 65536
 ### 7. Launch
 
 ```bash
-qwen
+qwen --auth-type openai --model qwen3.6
 ```
 
-Select your model with `/model`. Done. You have a free local coding agent.
+This tells Qwen Code to use Ollama directly, skipping the cloud auth screen. Done. You have a free local coding agent.
 
 ---
 
