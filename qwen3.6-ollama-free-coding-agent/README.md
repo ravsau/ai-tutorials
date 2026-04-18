@@ -48,9 +48,10 @@ ollama pull qwen3.6
 | Your RAM | Model | Command |
 |----------|-------|---------|
 | 32GB+ | Qwen 3.6 (recommended) | `ollama pull qwen3.6` |
-| 16GB | Qwen3-Coder 8B | `ollama pull qwen3-coder:8b` |
-| 16GB | Qwen 2.5 Coder 7B | `ollama pull qwen2.5-coder:7b` |
-| 8GB | Qwen 2.5 Coder 3B | `ollama pull qwen2.5-coder:3b` |
+| 24GB | Qwen 3.5 35B | `ollama pull qwen3.5:35b` |
+| 16GB | Qwen 3.5 9B | `ollama pull qwen3.5` |
+| 8GB | Qwen 3.5 4B | `ollama pull qwen3.5:4b` |
+| 8GB | Qwen 3.5 2B | `ollama pull qwen3.5:2b` |
 
 ### 3. Smoke test
 
