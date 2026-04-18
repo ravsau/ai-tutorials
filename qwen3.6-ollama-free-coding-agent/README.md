@@ -4,7 +4,7 @@ Run a fully agentic coding CLI on your own laptop. No API keys. No token meter. 
 
 This sets up **Qwen Code** (open-source agentic CLI from the Qwen team) with **Ollama** running Qwen 3.6 locally. The result: a Claude Code-style workflow where the model reads files, edits code, runs commands, and iterates — on your hardware.
 
-**Companion video:** [CloudYeti YouTube](https://youtube.com/@cloudyeti)
+**Companion video:** [Qwen 3.6 + Ollama: Free Local Claude Code Alternative?](https://youtu.be/VjCPqmESUCg)
 
 ---
 
