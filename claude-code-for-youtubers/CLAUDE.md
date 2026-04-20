@@ -5,7 +5,7 @@
 # and custom workflows built over months. Personal data and channel specifics removed.
 #
 # Drop this into your project as CLAUDE.md and customize it for YOUR channel.
-# Companion video: [VIDEO_LINK]
+# Companion video: https://youtu.be/WcG055NcBIQ
 
 ## What This Is
 

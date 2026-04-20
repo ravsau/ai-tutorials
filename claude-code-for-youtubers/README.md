@@ -2,7 +2,7 @@
 
 Turn Claude Code into your YouTube production assistant. System prompt + 7-stage content pipeline.
 
-**Companion video:** [VIDEO_LINK]
+**Companion video:** https://youtu.be/WcG055NcBIQ
 
 ## What's in here
 
