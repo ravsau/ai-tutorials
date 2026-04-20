@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>macOS Desktop</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif; overflow: hidden; height: 100vh; background: #000; }
+  #desktop { width: 100vw; height: 100vh; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 30%, #0f3460 60%, #533483 100%); position: relative; }
+
+  /* Menu Bar */
+  #menubar { position: fixed; top: 0; left: 0; right: 0; height: 28px; background: rgba(30,30,30,0.85); backdrop-filter: blur(30px); display: flex; align-items: center; padding: 0 10px; z-index: 10000; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  #menubar .apple-logo { font-size: 16px; color: #fff; margin-right: 18px; cursor: default; }
+  #menubar .menu-item { color: rgba(255,255,255,0.9); font-size: 13px; padding: 3px 10px; border-radius: 4px; cursor: default; font-weight: 500; }
+  #menubar .menu-item:hover { background: rgba(255,255,255,0.15); }
+  #menubar .menu-item.bold { font-weight: 700; }
+  #menubar .right-section { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+  #menubar .right-section span { color: rgba(255,255,255,0.9); font-size: 12px; padding: 3px 8px; border-radius: 4px; cursor: default; }
+  #menubar .right-section span:hover { background: rgba(255,255,255,0.15); }
+
+  /* Dock */
+  #dock-wrapper { position: fixed; bottom: 6px; left: 0; right: 0; display: flex; justify-content: center; z-index: 9999; pointer-events: none; }
+  #dock { display: flex; align-items: flex-end; gap: 4px; padding: 4px 8px; background: rgba(40,40,40,0.6); backdrop-filter: blur(30px); border: 1px solid rgba(255,255,255,0.18); border-radius: 16px; pointer-events: all; }
+  .dock-item { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 30px; cursor: pointer; transition: transform 0.15s ease, margin 0.15s ease; position: relative; }
+  .dock-item:hover { transform: scale(1.35) translateY(-8px); margin: 0 6px; }
+  .dock-item .dot { position: absolute; bottom: -4px; width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.7); display: none; }
+  .dock-item.active .dot { display: block; }
+  .dock-separator { width: 1px; height: 36px; background: rgba(255,255,255,0.2); margin: 0 4px; }
+
+  /* Window */
+  .window { position: absolute; min-width: 300px; min-height: 200px; border-radius: 10px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.3); display: flex; flex-direction: column; z-index: 100; }
+  .window.active { z-index: 1000; }
+  .window-header { height: 38px; background: rgba(50,50,50,0.95); display: flex; align-items: center; padding: 0 12px; cursor: default; flex-shrink: 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .window-controls { display: flex; gap: 7px; margin-right: 12px; }
+  .window-controls span { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 8px; color: transparent; transition: color 0.1s; }
+  .window-controls:hover span { color: rgba(0,0,0,0.6); }
+  .btn-close { background: #ff5f57; } .btn-minimize { background: #febc2e; } .btn-maximize { background: #28c840; }
+  .window-title { color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 500; flex: 1; text-align: center; margin-right: 50px; }
+  .window-body { flex: 1; overflow: auto; background: rgba(35,35,35,0.97); color: #e0e0e0; }
+  .resize-handle { position: absolute; bottom: 0; right: 0; width: 16px; height: 16px; cursor: nwse-resize; }
+
+  /* Notepad */
+  .notepad-layout { display: flex; height: 100%; }
+  .notepad-sidebar { width: 200px; background: rgba(40,40,40,0.95); border-right: 1px solid rgba(255,255,255,0.06); display: flex; flex-direction: column; flex-shrink: 0; }
+  .notepad-sidebar-header { padding: 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .notepad-sidebar-header span { color: rgba(255,255,255,0.5); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .notepad-new-btn { background: rgba(255,255,255,0.08); border: none; color: #fff; width: 24px; height: 24px; border-radius: 6px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+  .notepad-new-btn:hover { background: rgba(255,255,255,0.15); }
+  .notepad-list { flex: 1; overflow-y: auto; padding: 4px 0; }
+  .notepad-list-item { padding: 8px 12px; cursor: pointer; border-left: 3px solid transparent; transition: background 0.1s; }
+  .notepad-list-item:hover { background: rgba(255,255,255,0.04); }
+  .notepad-list-item.active { background: rgba(100,140,255,0.2); border-left-color: #648cff; }
+  .notepad-list-item .note-title { color: #fff; font-size: 13px; font-weight: 500; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .notepad-list-item .note-preview { color: rgba(255,255,255,0.35); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .notepad-list-item .note-date { color: rgba(255,255,255,0.25); font-size: 10px; margin-top: 2px; }
+  .notepad-list-item .note-delete { float: right; opacity: 0; color: #ff5f57; font-size: 14px; cursor: pointer; padding: 0 4px; transition: opacity 0.1s; }
+  .notepad-list-item:hover .note-delete { opacity: 1; }
+  .notepad-editor { flex: 1; display: flex; flex-direction: column; }
+  .notepad-toolbar { display: flex; gap: 6px; padding: 6px 10px; background: rgba(45,45,45,0.95); border-bottom: 1px solid rgba(255,255,255,0.06); align-items: center; }
+  .notepad-toolbar input { background: transparent; border: none; color: #fff; font-size: 13px; font-weight: 500; outline: none; flex: 1; }
+  .notepad-toolbar input::placeholder { color: rgba(255,255,255,0.3); }
+  .notepad-toolbar button { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); color: #ccc; padding: 3px 10px; border-radius: 5px; font-size: 11px; cursor: pointer; }
+  .notepad-toolbar button:hover { background: rgba(255,255,255,0.15); }
+  .notepad-textarea { flex: 1; background: transparent; border: none; color: #e8e8e8; font-family: 'Menlo', 'Courier New', monospace; font-size: 14px; padding: 12px; resize: none; outline: none; line-height: 1.6; }
+  .notepad-empty { flex: 1; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.2); font-size: 14px; flex-direction: column; gap: 8px; }
+  .notepad-empty .big-icon { font-size: 48px; }
+
+  /* Calculator */
+  .calc-body { padding: 0; height: 100%; display: flex; flex-direction: column; }
+  .calc-display { background: rgba(30,30,30,0.95); padding: 10px 16px; text-align: right; font-size: 36px; color: #fff; font-weight: 300; min-height: 70px; display: flex; align-items: flex-end; justify-content: flex-end; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .calc-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; flex: 1; }
+  .calc-btn { display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; border: none; outline: none; transition: background 0.1s; font-family: -apple-system, sans-serif; padding: 0; min-height: 48px; }
+  .calc-btn.num { background: rgba(60,60,60,0.9); color: #fff; }
+  .calc-btn.num:hover { background: rgba(80,80,80,0.9); }
+  .calc-btn.op { background: rgba(255,149,0,0.9); color: #fff; font-size: 24px; }
+  .calc-btn.op:hover { background: rgba(255,169,40,0.9); }
+  .calc-btn.op.active-op { background: #fff; color: #ff9500; }
+  .calc-btn.func { background: rgba(80,80,80,0.9); color: #fff; font-size: 17px; }
+  .calc-btn.func:hover { background: rgba(100,100,100,0.9); }
+  .calc-btn.zero { grid-column: span 2; }
+
+  /* Finder */
+  .finder-body { display: flex; height: 100%; }
+  .finder-sidebar { width: 160px; background: rgba(40,40,40,0.95); border-right: 1px solid rgba(255,255,255,0.06); padding: 8px 0; flex-shrink: 0; overflow-y: auto; }
+  .finder-sidebar-title { color: rgba(255,255,255,0.4); font-size: 11px; font-weight: 600; text-transform: uppercase; padding: 8px 14px 4px; letter-spacing: 0.5px; }
+  .finder-sidebar-item { padding: 4px 14px; color: rgba(255,255,255,0.8); font-size: 12px; cursor: default; display: flex; align-items: center; gap: 6px; }
+  .finder-sidebar-item:hover { background: rgba(255,255,255,0.06); }
+  .finder-sidebar-item.selected { background: rgba(100,140,255,0.25); color: #fff; }
+  .finder-content-area { flex: 1; display: flex; flex-direction: column; }
+  .finder-toolbar { display: flex; gap: 6px; padding: 6px 10px; background: rgba(45,45,45,0.95); border-bottom: 1px solid rgba(255,255,255,0.06); align-items: center; }
+  .finder-toolbar .breadcrumb { color: rgba(255,255,255,0.6); font-size: 12px; margin-left: 8px; }
+  .finder-toolbar .toolbar-btn { background: rgba(255,255,255,0.08); border: none; color: #aaa; width: 26px; height: 26px; border-radius: 5px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  .finder-toolbar .toolbar-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .finder-toolbar .toolbar-btn:disabled { opacity: 0.3; cursor: default; }
+  .finder-content { flex: 1; padding: 10px; overflow-y: auto; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 6px; }
+  .finder-item { width: 80px; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; border-radius: 6px; cursor: default; text-align: center; }
+  .finder-item:hover { background: rgba(255,255,255,0.06); }
+  .finder-item.selected { background: rgba(100,140,255,0.25); }
+  .finder-item .icon { font-size: 36px; margin-bottom: 4px; }
+  .finder-item .name { color: rgba(255,255,255,0.85); font-size: 11px; word-break: break-word; line-height: 1.3; max-width: 72px; }
+  .finder-info-panel { width: 220px; background: rgba(40,40,40,0.95); border-left: 1px solid rgba(255,255,255,0.06); padding: 12px; flex-shrink: 0; overflow-y: auto; display: none; }
+  .finder-info-panel.show { display: block; }
+  .finder-info-panel .info-icon { font-size: 48px; text-align: center; margin-bottom: 8px; }
+  .finder-info-panel .info-name { color: #fff; font-size: 13px; font-weight: 600; text-align: center; margin-bottom: 10px; }
+  .finder-info-panel .info-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .finder-info-panel .info-label { color: rgba(255,255,255,0.4); font-size: 11px; }
+  .finder-info-panel .info-value { color: rgba(255,255,255,0.7); font-size: 11px; }
+
+  /* Spotlight */
+  #spotlight-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 20000; display: none; align-items: flex-start; justify-content: center; padding-top: 18vh; }
+  #spotlight-overlay.show { display: flex; }
+  #spotlight-box { width: 560px; background: rgba(45,45,45,0.92); backdrop-filter: blur(40px); border-radius: 12px; box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.1); overflow: hidden; display: none; }
+  #spotlight-overlay.show #spotlight-box { display: block; }
+  #spotlight input { width: 100%; padding: 14px 18px; background: transparent; border: none; color: #fff; font-size: 20px; outline: none; font-family: -apple-system, sans-serif; }
+  #spotlight input::placeholder { color: rgba(255,255,255,0.35); }
+  .spotlight-result { padding: 8px 18px; color: rgba(255,255,255,0.8); font-size: 14px; cursor: default; display: flex; align-items: center; gap: 10px; }
+  .spotlight-result:hover, .spotlight-result.selected { background: rgba(100,140,255,0.35); color: #fff; }
+
+  /* Context Menu */
+  #context-menu { position: fixed; background: rgba(45,45,45,0.95); backdrop-filter: blur(30px); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); padding: 4px 0; min-width: 200px; z-index: 30000; display: none; }
+  #context-menu.show { display: block; }
+  .ctx-item { padding: 5px 16px; color: rgba(255,255,255,0.85); font-size: 13px; cursor: default; display: flex; justify-content: space-between; }
+  .ctx-item:hover { background: rgba(100,140,255,0.4); }
+  .ctx-separator { height: 1px; background: rgba(255,255,255,0.08); margin: 4px 0; }
+  .ctx-shortcut { color: rgba(255,255,255,0.35); font-size: 12px; }
+
+  /* Notification */
+  .notification { position: fixed; top: 36px; right: 12px; width: 300px; background: rgba(50,50,50,0.95); backdrop-filter: blur(30px); border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); padding: 12px 14px; z-index: 25000; animation: notifIn 0.3s ease; border: 1px solid rgba(255,255,255,0.1); }
+  @keyframes notifIn { from { opacity: 0; transform: translateY(-10px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .notification .notif-title { color: #fff; font-size: 13px; font-weight: 600; }
+  .notification .notif-body { color: rgba(255,255,255,0.65); font-size: 12px; margin-top: 2px; }
+
+  /* Terminal */
+  .terminal-output { padding: 10px; font-family: 'Menlo', monospace; font-size: 13px; line-height: 1.5; overflow-y: auto; flex: 1; }
+  .terminal-input-row { display: flex; padding: 6px 10px; background: rgba(30,30,30,0.95); border-top: 1px solid rgba(255,255,255,0.06); }
+  .terminal-input-row .prompt { color: #33ff33; font-family: monospace; font-size: 13px; padding-right: 6px; white-space: nowrap; }
+  .terminal-input-row input { flex: 1; background: transparent; border: none; color: #33ff33; font-family: monospace; font-size: 13px; outline: none; }
+
+  /* Photos */
+  .photos-toolbar { display: flex; gap: 6px; padding: 6px 10px; background: rgba(45,45,45,0.95); border-bottom: 1px solid rgba(255,255,255,0.06); align-items: center; }
+  .photos-toolbar .toolbar-btn { background: rgba(255,255,255,0.08); border: none; color: #aaa; padding: 3px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
+  .photos-toolbar .toolbar-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .photos-toolbar .photos-title { color: #fff; font-size: 14px; font-weight: 600; margin-left: 8px; }
+  .photos-grid { display: flex; flex-wrap: wrap; gap: 3px; padding: 8px; overflow-y: auto; flex: 1; align-content: flex-start; }
+  .photo-thumb { width: calc(20% - 3px); aspect-ratio: 1; border-radius: 2px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 32px; transition: transform 0.1s; }
+  .photo-thumb:hover { transform: scale(1.05); z-index: 1; }
+
+  /* Photo Viewer Modal */
+  .photo-viewer { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 25000; display: none; align-items: center; justify-content: center; flex-direction: column; }
+  .photo-viewer.show { display: flex; }
+  .photo-viewer .viewer-content { font-size: 120px; }
+  .photo-viewer .viewer-close { position: absolute; top: 20px; right: 20px; color: #fff; font-size: 28px; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(255,255,255,0.1); }
+  .photo-viewer .viewer-close:hover { background: rgba(255,255,255,0.2); }
+  .photo-viewer .viewer-nav { position: absolute; top: 50%; transform: translateY(-50%); color: #fff; font-size: 40px; cursor: pointer; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(255,255,255,0.1); }
+  .photo-viewer .viewer-nav:hover { background: rgba(255,255,255,0.2); }
+  .photo-viewer .viewer-nav.prev { left: 20px; }
+  .photo-viewer .viewer-nav.next { right: 20px; }
+  .photo-viewer .viewer-info { color: rgba(255,255,255,0.6); font-size: 14px; margin-top: 16px; }
+
+  /* Settings */
+  .settings-layout { display: flex; height: 100%; }
+  .settings-sidebar { width: 200px; background: rgba(40,40,40,0.95); border-right: 1px solid rgba(255,255,255,0.06); overflow-y: auto; flex-shrink: 0; }
+  .settings-sidebar-item { padding: 8px 14px; color: rgba(255,255,255,0.75); font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+  .settings-sidebar-item:hover { background: rgba(255,255,255,0.06); }
+  .settings-sidebar-item.active { background: rgba(100,140,255,0.25); color: #fff; }
+  .settings-content { flex: 1; padding: 20px; overflow-y: auto; }
+  .settings-content h2 { color: #fff; font-size: 22px; font-weight: 600; margin-bottom: 16px; }
+  .settings-card { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; }
+  .settings-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
+  .settings-row + .settings-row { border-top: 1px solid rgba(255,255,255,0.04); }
+  .settings-label { color: rgba(255,255,255,0.7); font-size: 13px; }
+  .settings-value { color: rgba(255,255,255,0.4); font-size: 13px; }
+  .settings-toggle { width: 42px; height: 24px; background: rgba(255,255,255,0.15); border-radius: 12px; cursor: pointer; position: relative; transition: background 0.2s; }
+  .settings-toggle.on { background: #34c759; }
+  .settings-toggle::after { content: ''; position: absolute; width: 20px; height: 20px; background: #fff; border-radius: 50%; top: 2px; left: 2px; transition: transform 0.2s; }
+  .settings-toggle.on::after { transform: translateX(18px); }
+  .settings-slider { width: 160px; -webkit-appearance: none; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; outline: none; }
+  .settings-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: #fff; border-radius: 50%; cursor: pointer; }
+  .settings-select { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 12px; outline: none; cursor: pointer; }
+  .settings-select option { background: #2a2a2a; }
+
+  /* Browser */
+  .browser-toolbar { display: flex; gap: 6px; padding: 8px 10px; background: rgba(45,45,45,0.95); border-bottom: 1px solid rgba(255,255,255,0.06); align-items: center; }
+  .browser-nav-btn { background: rgba(255,255,255,0.08); border: none; color: #aaa; width: 28px; height: 28px; border-radius: 7px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+  .browser-nav-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .browser-url-bar { flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 6px 12px; color: #ccc; font-size: 13px; outline: none; text-align: center; }
+  .browser-url-bar:focus { border-color: rgba(100,140,255,0.5); text-align: left; }
+  .browser-bookmarks { display: flex; gap: 4px; padding: 4px 10px; background: rgba(40,40,40,0.9); border-bottom: 1px solid rgba(255,255,255,0.04); overflow-x: auto; }
+  .browser-bookmark { padding: 3px 10px; background: rgba(255,255,255,0.06); border-radius: 12px; color: rgba(255,255,255,0.6); font-size: 11px; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 4px; }
+  .browser-bookmark:hover { background: rgba(255,255,255,0.12); color: #fff; }
+  .browser-bookmark .bm-remove { font-size: 10px; opacity: 0; color: #ff5f57; }
+  .browser-bookmark:hover .bm-remove { opacity: 1; }
+  .browser-content { flex: 1; overflow-y: auto; background: linear-gradient(135deg, #1a1a2e, #16213e); }
+  .browser-page { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 40px; }
+  .browser-page .page-icon { font-size: 64px; margin-bottom: 16px; }
+  .browser-page .page-title { color: #fff; font-size: 28px; font-weight: 200; margin-bottom: 8px; }
+  .browser-page .page-desc { color: rgba(255,255,255,0.4); font-size: 14px; margin-bottom: 24px; }
+  .browser-page .quick-links { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+  .browser-page .quick-link { width: 72px; height: 72px; background: rgba(255,255,255,0.06); border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: background 0.15s; }
+  .browser-page .quick-link:hover { background: rgba(255,255,255,0.12); }
+  .browser-page .quick-link .ql-icon { font-size: 28px; margin-bottom: 4px; }
+  .browser-page .quick-link .ql-name { color: rgba(255,255,255,0.5); font-size: 10px; }
+  .browser-page .add-bookmark-btn { margin-top: 20px; padding: 8px 20px; background: rgba(100,140,255,0.2); border: 1px solid rgba(100,140,255,0.3); color: #648cff; border-radius: 8px; cursor: pointer; font-size: 13px; }
+  .browser-page .add-bookmark-btn:hover { background: rgba(100,140,255,0.3); }
+  .browser-page .bookmark-list { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+  .browser-page .bm-card { width: 100px; padding: 12px; background: rgba(255,255,255,0.04); border-radius: 10px; text-align: center; cursor: pointer; }
+  .browser-page .bm-card:hover { background: rgba(255,255,255,0.08); }
+  .browser-page .bm-card .bm-icon { font-size: 28px; margin-bottom: 4px; }
+  .browser-page .bm-card .bm-name { color: rgba(255,255,255,0.6); font-size: 11px; }
+
+  /* Music */
+  .music-layout { height: 100%; display: flex; flex-direction: column; }
+  .music-now-playing { padding: 20px; text-align: center; }
+  .music-artwork { width: 140px; height: 140px; margin: 0 auto 12px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 56px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+  .music-song-title { color: #fff; font-size: 16px; font-weight: 600; }
+  .music-song-artist { color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 2px; }
+  .music-progress { padding: 0 20px; }
+  .music-progress-bar { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; position: relative; cursor: pointer; }
+  .music-progress-fill { height: 100%; background: #e91e63; border-radius: 2px; transition: width 0.3s; }
+  .music-progress-times { display: flex; justify-content: space-between; color: rgba(255,255,255,0.3); font-size: 11px; margin-top: 2px; }
+  .music-controls { display: flex; align-items: center; justify-content: center; gap: 24px; padding: 12px; }
+  .music-ctrl-btn { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+  .music-ctrl-btn:hover { background: rgba(255,255,255,0.1); }
+  .music-ctrl-btn.play-btn { font-size: 30px; width: 48px; height: 48px; background: rgba(255,255,255,0.1); }
+  .music-ctrl-btn.play-btn:hover { background: rgba(255,255,255,0.18); }
+  .music-volume { display: flex; align-items: center; gap: 8px; padding: 0 20px 8px; justify-content: center; }
+  .music-volume span { color: rgba(255,255,255,0.4); font-size: 12px; }
+  .music-playlist { flex: 1; overflow-y: auto; padding: 8px 12px; }
+  .music-playlist-title { color: rgba(255,255,255,0.4); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; padding: 8px 8px 4px; }
+  .music-track { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 6px; cursor: pointer; }
+  .music-track:hover { background: rgba(255,255,255,0.06); }
+  .music-track.playing { background: rgba(233,30,99,0.15); }
+  .music-track .track-num { color: rgba(255,255,255,0.25); font-size: 12px; width: 20px; text-align: center; }
+  .music-track .track-emoji { font-size: 20px; }
+  .music-track .track-info { flex: 1; }
+  .music-track .track-name { color: rgba(255,255,255,0.85); font-size: 13px; }
+  .music-track .track-artist { color: rgba(255,255,255,0.35); font-size: 11px; }
+  .music-track .track-dur { color: rgba(255,255,255,0.3); font-size: 12px; }
+
+  /* About Dialog */
+  .about-dialog { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 25000; display: none; align-items: center; justify-content: center; }
+  .about-dialog.show { display: flex; }
+  .about-box { background: rgba(50,50,50,0.95); backdrop-filter: blur(30px); border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); padding: 30px; text-align: center; min-width: 300px; border: 1px solid rgba(255,255,255,0.1); }
+  .about-box .about-logo { font-size: 64px; margin-bottom: 12px; }
+  .about-box .about-title { color: #fff; font-size: 20px; font-weight: 600; }
+  .about-box .about-ver { color: rgba(255,255,255,0.4); font-size: 12px; margin-top: 4px; }
+  .about-box .about-specs { color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 16px; line-height: 1.8; }
+  .about-box .about-close { margin-top: 16px; padding: 6px 24px; background: rgba(100,140,255,0.2); border: 1px solid rgba(100,140,255,0.3); color: #648cff; border-radius: 6px; cursor: pointer; font-size: 13px; }
+  .about-box .about-close:hover { background: rgba(100,140,255,0.3); }
+</style>
+</head>
+<body>
+<div id="desktop">
+  <div id="menubar">
+    <span class="apple-logo" onclick="showAbout()"></span>
+    <span class="menu-item bold" id="active-app-name">Finder</span>
+    <span class="menu-item">File</span>
+    <span class="menu-item">Edit</span>
+    <span class="menu-item">View</span>
+    <span class="menu-item">Window</span>
+    <span class="menu-item">Help</span>
+    <div class="right-section">
+      <span onclick="toggleSpotlight()" style="cursor:pointer">🔍</span>
+      <span id="menu-battery">🔋 100%</span>
+      <span id="menu-wifi">📶</span>
+      <span id="menu-clock"></span>
+    </div>
+  </div>
+  <div id="desktop-area" style="position:absolute;top:28px;left:0;right:0;bottom:60px;"></div>
+  <div id="dock-wrapper">
+    <div id="dock">
+      <div class="dock-item active" onclick="openApp('finder')" style="background:linear-gradient(135deg,#1e90ff,#0066cc)"><span>📁</span><span class="dot"></span></div>
+      <div class="dock-item" onclick="openApp('notepad')" style="background:linear-gradient(135deg,#2ecc71,#27ae60)"><span>📝</span><span class="dot"></span></div>
+      <div class="dock-item" onclick="openApp('calculator')" style="background:linear-gradient(135deg,#e67e22,#d35400)"><span>🔢</span><span class="dot"></span></div>
+      <div class="dock-separator"></div>
+      <div class="dock-item" onclick="openApp('terminal')" style="background:linear-gradient(135deg,#2c3e50,#1a252f)"><span>⬛</span><span class="dot"></span></div>
+      <div class="dock-item" onclick="openApp('photos')" style="background:linear-gradient(135deg,#e74c3c,#c0392b)"><span>🖼️</span><span class="dot"></span></div>
+      <div class="dock-item" onclick="openApp('settings')" style="background:linear-gradient(135deg,#7f8c8d,#616a6b)"><span>⚙️</span><span class="dot"></span></div>
+      <div class="dock-separator"></div>
+      <div class="dock-item" onclick="openApp('browser')" style="background:linear-gradient(135deg,#3498db,#2980b9)"><span>🌐</span><span class="dot"></span></div>
+      <div class="dock-item" onclick="openApp('music')" style="background:linear-gradient(135deg,#e91e63,#c2185b)"><span>🎵</span><span class="dot"></span></div>
+    </div>
+  </div>
+  <div id="spotlight-overlay" onclick="if(event.target===this)toggleSpotlight()">
+    <div id="spotlight-box"><div id="spotlight"><input type="text" placeholder="Spotlight Search" id="spotlight-input" oninput="filterSpotlight()" onkeydown="handleSpotlightKey(event)"><div id="spotlight-results"></div></div></div>
+  </div>
+  <div id="context-menu"></div>
+  <div class="photo-viewer" id="photo-viewer">
+    <div class="viewer-close" onclick="closePhotoViewer()">✕</div>
+    <div class="viewer-nav prev" onclick="viewerNav(-1)">‹</div>
+    <div class="viewer-content" id="viewer-content"></div>
+    <div class="viewer-nav next" onclick="viewerNav(1)">›</div>
+    <div class="viewer-info" id="viewer-info"></div>
+  </div>
+  <div class="about-dialog" id="about-dialog" onclick="if(event.target===this)hideAbout()">
+    <div class="about-box">
+      <div class="about-logo"></div>
+      <div class="about-title">macOS Sonoma</div>
+      <div class="about-ver">Version 14.0 (HTML Edition)</div>
+      <div class="about-specs">
+        MacBook Pro (14-inch, 2024)<br>
+        Apple M3 Pro &mdash; 18GB RAM<br>
+        Disk: 512GB SSD &mdash; Display: 2560×1600
+      </div>
+      <button class="about-close" onclick="hideAbout()">OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let windowZIndex = 100, activeWindow = null, openWindows = {}, nextWinId = 1;
+const dockApps = {
+  finder:{name:'Finder',icon:'📁',color:'#1e90ff'}, notepad:{name:'Notepad',icon:'📝',color:'#2ecc71'},
+  calculator:{name:'Calculator',icon:'🔢',color:'#e67e22'}, terminal:{name:'Terminal',icon:'⬛',color:'#2c3e50'},
+  photos:{name:'Photos',icon:'🖼️',color:'#e74c3c'}, settings:{name:'Settings',icon:'⚙️',color:'#7f8c8d'},
+  browser:{name:'Browser',icon:'🌐',color:'#3498db'}, music:{name:'Music',icon:'🎵',color:'#e91e63'},
+};
+
+// ===== NOTES =====
+let notes = JSON.parse(localStorage.getItem('macos-notes')||'null') || [
+  {id:1,title:'Welcome Note',content:'Welcome to Notepad!\n\nThis is your personal notes app.\n\n\u2022 Click + to create a new note\n\u2022 Notes auto-save as you type\n\u2022 Right-click a note to delete it\n\u2022 Double-click title to rename',created:Date.now()-86400000},
+  {id:2,title:'Shopping List',content:'- Milk\n- Bread\n- Eggs\n- Coffee\n- Butter',created:Date.now()-3600000},
+  {id:3,title:'Ideas',content:'Build a macOS desktop in HTML\nLearn WebGL\nCreate a music visualizer\nBuild a weather app',created:Date.now()-1800000},
+];
+function saveNotes(){localStorage.setItem('macos-notes',JSON.stringify(notes));}
+let noteInstances = {};
+
+// ===== SETTINGS =====
+let settingsState = JSON.parse(localStorage.getItem('macos-settings')||'null') || {
+  wifi:'HomeNetwork',bluetooth:true,sound:75,brightness:80,darkMode:true,wallpaper:0,dockSize:52,
+  wifiOn:true,bluetoothOn:true,doNotDisturb:false,airDrop:'Contacts Only',nightShift:false,
+};
+function saveSettings(){localStorage.setItem('macos-settings',JSON.stringify(settingsState));}
+
+// ===== BOOKMARKS =====
+let bookmarks = JSON.parse(localStorage.getItem('macos-bookmarks')||'null') || [
+  {name:'Apple',url:'https://www.apple.com',icon:'🍎'},{name:'Google',url:'https://www.google.com',icon:'🔍'},
+  {name:'GitHub',url:'https://github.com',icon:'🐙'},{name:'YouTube',url:'https://youtube.com',icon:'▶️'},
+];
+
+// ===== CLOCK =====
+function updateClock(){
+  const n=new Date(),d=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],m=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const h=n.getHours(),mi=n.getMinutes().toString().padStart(2,'0'),ap=h>=12?'PM':'AM',h12=h%12||12;
+  document.getElementById('menu-clock').textContent=`${d[n.getDay()]} ${m[n.getMonth()]} ${n.getDate()}  ${h12}:${mi} ${ap}`;
+}
+updateClock(); setInterval(updateClock,1000);
+
+// ===== SPOTLIGHT =====
+function toggleSpotlight(){
+  const o=document.getElementById('spotlight-overlay'); o.classList.toggle('show');
+  if(o.classList.contains('show')){document.getElementById('spotlight-input').value='';document.getElementById('spotlight-input').focus();filterSpotlight();}
+}
+document.addEventListener('keydown',e=>{
+  if((e.metaKey||e.ctrlKey)&&e.key===' '){e.preventDefault();toggleSpotlight();}
+  if(e.key==='Escape'){document.getElementById('spotlight-overlay').classList.remove('show');document.getElementById('context-menu').classList.remove('show');}
+});
+const spotlightApps=Object.entries(dockApps).map(([id,a])=>({id,name:a.name,icon:a.icon}));
+function filterSpotlight(){
+  const q=document.getElementById('spotlight-input').value.toLowerCase(),r=document.getElementById('spotlight-results');
+  const f=spotlightApps.filter(a=>a.name.toLowerCase().includes(q));
+  r.innerHTML=f.map((a,i)=>`<div class="spotlight-result ${i===0?'selected':''}" onclick="openApp('${a.id}');toggleSpotlight()"><span style="font-size:22px">${a.icon}</span> ${a.name}</div>`).join('');
+}
+function handleSpotlightKey(e){if(e.key==='Enter'){const s=document.querySelector('.spotlight-result.selected');if(s)s.click();}}
+
+// ===== CONTEXT MENU =====
+document.getElementById('desktop-area').addEventListener('contextmenu',e=>{
+  e.preventDefault();const m=document.getElementById('context-menu');
+  m.innerHTML=`<div class="ctx-item" onclick="openApp('finder');hideCtx()">New Finder Window</div><div class="ctx-separator"></div><div class="ctx-item" onclick="openApp('notepad');hideCtx()">New Text File <span class="ctx-shortcut">⌘N</span></div><div class="ctx-item" onclick="changeWallpaper();hideCtx()">Change Wallpaper...</div><div class="ctx-separator"></div><div class="ctx-item" onclick="showAbout();hideCtx()">About This Mac</div><div class="ctx-item" onclick="openApp('settings');hideCtx()">Display Settings</div>`;
+  m.style.left=Math.min(e.clientX,innerWidth-220)+'px';m.style.top=Math.min(e.clientY,innerHeight-200)+'px';m.classList.add('show');
+});
+function hideCtx(){document.getElementById('context-menu').classList.remove('show');}
+document.addEventListener('click',e=>{if(!e.target.closest('#context-menu'))hideCtx();});
+
+// ===== WALLPAPERS =====
+const wallpapers=[
+  'linear-gradient(135deg,#1a1a2e,#16213e 30%,#0f3460 60%,#533483)','linear-gradient(135deg,#0c0c1d,#1a0a2e 30%,#2d1b69 60%,#11998e)',
+  'linear-gradient(135deg,#141e30,#243b55)','linear-gradient(135deg,#0f0c29,#302b63,#24243e)','linear-gradient(135deg,#1f1c2c,#928dab)',
+  'linear-gradient(135deg,#0F2027,#203A43,#2C5364)','linear-gradient(135deg,#232526,#414345)','linear-gradient(135deg,#000428,#004e92)',
+  'linear-gradient(135deg,#1a2a6c,#b21f1f,#fdbb2d)','linear-gradient(135deg,#0d324d,#22a6b3)',
+];
+let wpIndex=0;
+function changeWallpaper(){wpIndex=(wpIndex+1)%wallpapers.length;document.getElementById('desktop').style.background=wallpapers[wpIndex];settingsState.wallpaper=wpIndex;saveSettings();showNotification('Desktop','Wallpaper changed');}
+
+// ===== WINDOW MANAGEMENT =====
+function createWindow(appId, title, width, height, content){
+  const winId = 'win-' + (nextWinId++);
+  const win = document.createElement('div');
+  win.className = 'window active'; win.id = winId;
+  win.style.width=width+'px';win.style.height=height+'px';
+  win.style.left=(80+Object.keys(openWindows)*30)+'px';win.style.top=(60+Object.keys(openWindows)*30)+'px';
+  win.style.zIndex=++windowZIndex;
+  win.innerHTML=`<div class="window-header" onmousedown="startDrag(event,this.parentElement)"><div class="window-controls"><span class="btn-close" onclick="closeWindow('${winId}','${appId}')">✕</span><span class="btn-minimize" onclick="minimizeWindow('${winId}')">−</span><span class="btn-maximize" onclick="maximizeWindow('${winId}')">⤢</span></div><div class="window-title">${title}</div></div><div class="window-body">${content}</div><div class="resize-handle" onmousedown="startResize(event,this.parentElement)"></div>`;
+  win.addEventListener('mousedown',()=>focusWindow(win));
+  document.getElementById('desktop-area').appendChild(win);
+  openWindows[winId] = {el:win, appId, title};
+  const dockItem=document.querySelector(`.dock-item[onclick="openApp('${appId}')"]`);
+  if(dockItem) dockItem.classList.add('active');
+  focusWindow(win);
+  return win;
+}
+function closeWindow(winId, appId){
+  const w=openWindows[winId]; if(!w)return; w.el.remove(); delete openWindows[winId];
+  // Clean up note instances
+  if(appId==='notepad' && noteInstances[winId]){delete noteInstances[winId];}
+  const dockItem=document.querySelector(`.dock-item[onclick="openApp('${appId}')"]`);
+  // Check if any other window of this app exists
+  const hasOther=Object.values(openWindows).some(w=>w.appId===appId);
+  if(!hasOther && dockItem) dockItem.classList.remove('active');
+  if(activeWindow===w.el){const ids=Object.keys(openWindows);if(ids.length>0)focusWindow(openWindows[ids[ids.length-1]].el);else document.getElementById('active-app-name').textContent='Finder';}
+}
+function minimizeWindow(winId){
+  const w=openWindows[winId]; if(!w)return;
+  w.el.style.transition='transform 0.3s ease,opacity 0.3s ease';w.el.style.transform='scale(0.1)';w.el.style.opacity='0';
+  setTimeout(()=>{w.el.style.display='none';w.el.style.transform='';w.el.style.opacity='';},300);
+}
+let maximizedState={};
+function maximizeWindow(winId){
+  const w=openWindows[winId]; if(!w)return;
+  if(maximizedState[winId]){const s=maximizedState[winId];w.el.style.left=s.left;w.el.style.top=s.top;w.el.style.width=s.width;w.el.style.height=s.height;w.el.style.borderRadius='10px';delete maximizedState[winId];}
+  else{maximizedState[winId]={left:w.el.style.left,top:w.el.style.top,width:w.el.style.width,height:w.el.style.height};w.el.style.left='0';w.el.style.top='0';w.el.style.width='100%';w.el.style.height='100%';w.el.style.borderRadius='0';}
+}
+function focusWindow(win){
+  document.querySelectorAll('.window').forEach(w=>w.classList.remove('active'));win.classList.add('active');win.style.zIndex=++windowZIndex;activeWindow=win;
+  const w=openWindows[win.id];document.getElementById('active-app-name').textContent=w?dockApps[w.appId]?.name||'Finder':'Finder';
+}
+
+// ===== DRAG & RESIZE =====
+let dragState=null;
+function startDrag(e,win){if(e.target.classList.contains('btn-close')||e.target.classList.contains('btn-minimize')||e.target.classList.contains('btn-maximize'))return;focusWindow(win);dragState={win,sx:e.clientX,sy:e.clientY,ol:parseInt(win.style.left),ot:parseInt(win.style.top)};document.addEventListener('mousemove',onDrag);document.addEventListener('mouseup',stopDrag);}
+function onDrag(e){if(!dragState)return;dragState.win.style.left=(dragState.ol+e.clientX-dragState.sx)+'px';dragState.win.style.top=Math.max(28,dragState.ot+e.clientY-dragState.sy)+'px;}
+function stopDrag(){document.removeEventListener('mousemove',onDrag);document.removeEventListener('mouseup',stopDrag);dragState=null;}
+let resizeState=null;
+function startResize(e,win){e.stopPropagation();focusWindow(win);resizeState={win,sx:e.clientX,sy:e.clientY,ow:win.offsetWidth,oh:win.offsetHeight};document.addEventListener('mousemove',onResize);document.addEventListener('mouseup',stopResize);}
+function onResize(e){if(!resizeState)return;const dx=e.clientX-resizeState.sx,dy=e.clientY-resizeState.sy;resizeState.win.style.width=Math.max(300,resizeState.ow+dx)+'px';resizeState.win.style.height=Math.max(200,resizeState.oh+dy)+'px;}
+function stopResize(){document.removeEventListener('mousemove',onResize);document.removeEventListener('mouseup',stopResize);resizeState=null;}
+
+// ===== OPEN APP =====
+function openApp(appId){
+  // Find existing window of this app
+  const existing=Object.values(openWindows).find(w=>w.appId===appId);
+  if(existing){
+    const win=existing.el;
+    if(win.style.display==='none'){win.style.display='flex';win.style.transition='transform 0.3s ease,opacity 0.3s ease';win.style.transform='scale(0.8)';win.style.opacity='0';requestAnimationFrame(()=>{win.style.transform='scale(1)';win.style.opacity='1';setTimeout(()=>{win.style.transform='';win.style.opacity='';},300);});}
+    focusWindow(win);return;
+  }
+  switch(appId){
+    case 'finder': createWindow(appId,'Finder',700,450,(()=>{finderPath=['/'];return getFinderContent();})()); break;
+    case 'notepad': initNotepad(); break;
+    case 'calculator': createWindow(appId,'Calculator',260,380,getCalcContent()); break;
+    case 'terminal': createWindow(appId,'Terminal',600,380,getTerminalContent()); break;
+    case 'photos': initPhotos(); break;
+    case 'settings': initSettings(); break;
+    case 'browser': initBrowser(); break;
+    case 'music': initMusic(); break;
+  }
+}
+
+// ===== NOTIFICATION =====
+function showNotification(title,body){
+  const n=document.createElement('div');n.className='notification';n.innerHTML=`<div class="notif-title">${title}</div><div class="notif-body">${body}</div>`;document.getElementById('desktop').appendChild(n);setTimeout(()=>{n.style.transition='opacity 0.3s';n.style.opacity='0';setTimeout(()=>n.remove(),300);},3000);
+}
+
+// ===== ABOUT =====
+function showAbout(){document.getElementById('about-dialog').classList.add('show');}
+function hideAbout(){document.getElementById('about-dialog').classList.remove('show');}
+
+// ===== NOTEPAD =====
+function initNotepad(){
+  const winId='win-'+(nextWinId++);
+  const sidebarHTML=`<div class="notepad-sidebar"><div class="notepad-sidebar-header"><span>Notes</span><button class="notepad-new-btn" onclick="createNote('${winId}')">+</button></div><div class="notepad-list" id="note-list-${winId}"></div></div>`;
+  const editorHTML=`<div class="notepad-editor" id="note-editor-${winId}"><div class="notepad-empty"><div class="big-icon">📝</div><div>Select a note or create a new one</div></div></div>`;
+  const win=createWindow('notepad','Notepad',600,420,sidebarHTML+editorHTML);
+  noteInstances[winId]={activeNoteId:null};
+  renderNoteList(winId);
+}
+
+function renderNoteList(winId){
+  const list=document.getElementById('note-list-'+winId); if(!list)return;
+  const sorted=[...notes].sort((a,b)=>b.created-a.created);
+  list.innerHTML=sorted.map(n=>{
+    const preview=n.content.split('\n')[0].substring(0,40);
+    const date=new Date(n.created);const ds=date.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    const isActive=noteInstances[winId].activeNoteId===n.id;
+    return `<div class="notepad-list-item ${isActive?'active':''}" oncontextmenu="event.preventDefault();noteContext(event,'${winId}',${n.id})" ondblclick="renameNote('${winId}',${n.id})" onclick="selectNote('${winId}',${n.id})">
+      <span class="note-delete" onclick="event.stopPropagation();deleteNote('${winId}',${n.id})">✕</span>
+      <div class="note-title">${n.title}</div><div class="note-preview">${preview}</div><div class="note-date">${ds}</div></div>`;
+  }).join('');
+}
+
+function createNote(winId){
+  const id=Date.now();
+  notes.push({id,title:'New Note',content:'',created:id});saveNotes();
+  noteInstances[winId].activeNoteId=id;
+  renderNoteList(winId);selectNote(winId,id);
+}
+
+function selectNote(winId,noteId){
+  if(!noteInstances[winId])return;
+  noteInstances[winId].activeNoteId=noteId;
+  renderNoteList(winId);
+  const editor=document.getElementById('note-editor-'+winId); if(!editor)return;
+  const note=notes.find(n=>n.id===noteId); if(!note)return;
+  editor.innerHTML=`<div class="notepad-toolbar"><input value="${note.title.replace(/"/g,'&quot;')}" placeholder="Title" oninput="updateNoteTitle('${winId}',${noteId},this.value)"><button onclick="exportNote('${winId}',${noteId})">Export</button><button onclick="deleteNote('${winId}',${noteId})">Delete</button></div><textarea class="notepad-textarea" placeholder="Start typing..." oninput="updateNoteContent('${winId}',${noteId},this.value)">${note.content}</textarea>`;
+}
+
+function updateNoteTitle(winId,noteId,title){
+  const note=notes.find(n=>n.id===noteId); if(!note)return;note.title=title;saveNotes();renderNoteList(winId);
+}
+function updateNoteContent(winId,noteId,content){
+  const note=notes.find(n=>n.id===noteId); if(!note)return;note.content=content;saveNotes();
+}
+function deleteNote(winId,noteId){
+  notes=notes.filter(n=>n.id!==noteId);saveNotes();
+  if(noteInstances[winId].activeNoteId===noteId){noteInstances[winId].activeNoteId=null;}
+  renderNoteList(winId);
+  const editor=document.getElementById('note-editor-'+winId);
+  if(editor)editor.innerHTML='<div class="notepad-empty"><div class="big-icon">📝</div><div>Select a note or create a new one</div></div>';
+}
+function renameNote(winId,noteId){
+  const note=notes.find(n=>n.id===noteId); if(!note)return;
+  const newTitle=prompt('Rename note:',note.title);
+  if(newTitle!==null&&newTitle.trim()){note.title=newTitle.trim();saveNotes();renderNoteList(winId);}
+}
+function exportNote(winId,noteId){
+  const note=notes.find(n=>n.id===noteId); if(!note)return;
+  const blob=new Blob([note.content],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=note.title+'.txt';a.click();showNotification('Notepad','Note exported!');
+}
+function noteContext(e,winId,noteId){
+  e.preventDefault();const m=document.getElementById('context-menu');
+  m.innerHTML=`<div class="ctx-item" onclick="renameNote('${winId}',${noteId});hideCtx()">Rename</div><div class="ctx-item" onclick="deleteNote('${winId}',${noteId});hideCtx()">Delete</div><div class="ctx-item" onclick="exportNote('${winId}',${noteId});hideCtx()">Export as .txt</div>`;
+  m.style.left=Math.min(e.clientX,innerWidth-180)+'px';m.style.top=Math.min(e.clientY,innerHeight-150)+'px';m.classList.add('show');
+}
+
+// ===== CALCULATOR =====
+let calcDisplay='0',calcPrev=null,calcOp=null,calcNewInput=true;
+function getCalcContent(){
+  return `<div class="calc-body"><div class="calc-display" id="calc-display">0</div><div class="calc-buttons">
+  <button class="calc-btn func" onclick="calcFunc('AC')">AC</button><button class="calc-btn func" onclick="calcFunc('±')">±</button><button class="calc-btn func" onclick="calcFunc('%')">%</button><button class="calc-btn op" onclick="calcOpSet('÷')">÷</button>
+  <button class="calc-btn num" onclick="calcNum('7')">7</button><button class="calc-btn num" onclick="calcNum('8')">8</button><button class="calc-btn num" onclick="calcNum('9')">9</button><button class="calc-btn op" onclick="calcOpSet('×')">×</button>
+  <button class="calc-btn num" onclick="calcNum('4')">4</button><button class="calc-btn num" onclick="calcNum('5')">5</button><button class="calc-btn num" onclick="calcNum('6')">6</button><button class="calc-btn op" onclick="calcOpSet('−')">−</button>
+  <button class="calc-btn num" onclick="calcNum('1')">1</button><button class="calc-btn num" onclick="calcNum('2')">2</button><button class="calc-btn num" onclick="calcNum('3')">3</button><button class="calc-btn op" onclick="calcOpSet('+')">+</button>
+  <button class="calc-btn num zero" onclick="calcNum('0')">0</button><button class="calc-btn num" onclick="calcNum('.')">.</button><button class="calc-btn op" onclick="calcEquals()">=</button>
+  </div></div>`;
+}
+function updateCalcDisplay(){const el=document.getElementById('calc-display');if(el){const v=calcDisplay.length>12?parseFloat(calcDisplay).toExponential(6):calcDisplay;el.textContent=v;el.style.fontSize=calcDisplay.length>9?'28px':'36px';}}
+function calcNum(n){if(calcNewInput){calcDisplay=n==='.'?'0.':n;calcNewInput=false;}else{if(n==='.'&&calcDisplay.includes('.'))return;calcDisplay+=n;}updateCalcDisplay();}
+function calcOpSet(op){if(calcPrev!==null&&!calcNewInput)calcEquals();calcPrev=parseFloat(calcDisplay);calcOp=op;calcNewInput=true;document.querySelectorAll('.calc-btn.op').forEach(b=>b.classList.remove('active-op'));event.target.classList.add('active-op');}
+function calcEquals(){if(calcPrev===null||calcOp===null)return;const curr=parseFloat(calcDisplay);let r;switch(calcOp){case'+':r=calcPrev+curr;break;case'−':r=calcPrev-curr;break;case'×':r=calcPrev*curr;break;case'÷':r=curr!==0?calcPrev/curr:'Error';break;}calcDisplay=String(r);calcPrev=null;calcOp=null;calcNewInput=true;updateCalcDisplay();}
+function calcFunc(fn){if(fn==='AC'){calcDisplay='0';calcPrev=null;calcOp=null;calcNewInput=true;document.querySelectorAll('.calc-btn.op').forEach(b=>b.classList.remove('active-op'));}else if(fn==='±'){calcDisplay=String(-parseFloat(calcDisplay));}else if(fn==='%'){calcDisplay=String(parseFloat(calcDisplay)/100);}updateCalcDisplay();}
+
+// ===== FINDER =====
+let finderPath=['/'];
+const fakeFS={
+  '/':[
+    {name:'Applications',icon:'📂',type:'folder',children:[{name:'Calculator.app',icon:'🔢',type:'app'},{name:'Finder.app',icon:'📁',type:'app'},{name:'Notepad.app',icon:'📝',type:'app'},{name:'Terminal.app',icon:'⬛',type:'app'},{name:'Browser.app',icon:'🌐',type:'app'},{name:'Music.app',icon:'🎵',type:'app'},{name:'Photos.app',icon:'🖼️',type:'app'},{name:'Settings.app',icon:'⚙️',type:'app'},{name:'Safari.app',icon:'🧭',type:'app'},{name:'Maps.app',icon:'🗺️',type:'app'}]},
+    {name:'Desktop',icon:'🖥️',type:'folder',children:[{name:'Screenshot.png',icon:'🖼️',type:'image'},{name:'Notes.txt',icon:'📄',type:'text'},{name:'Project',icon:'📁',type:'folder',children:[{name:'readme.md',icon:'📄',type:'text'},{name:'config.json',icon:'⚙️',type:'file'}]}]},
+    {name:'Documents',icon:'📁',type:'folder',children:[{name:'Resume.pdf',icon:'📕',type:'pdf'},{name:'Budget.xlsx',icon:'📊',type:'sheet'},{name:'Presentation.pptx',icon:'📙',type:'slide'},{name:'Report.docx',icon:'📘',type:'doc'},{name:'Photos',icon:'📁',type:'folder',children:[{name:'vacation.jpg',icon:'🖼️',type:'image'},{name:'family.png',icon:'🖼️',type:'image'},{name:'dog.gif',icon:'🎞️',type:'image'}]},{name:'Work',icon:'📁',type:'folder',children:[{name:'meeting-notes.txt',icon:'📄',type:'text'},{name:'todo-list.txt',icon:'📋',type:'text'}]}]},
+    {name:'Downloads',icon:'📥',type:'folder',children:[{name:'installer.dmg',icon:'💿',type:'file'},{name:'photo.zip',icon:'📦',type:'file'},{name:'movie.mp4',icon:'🎬',type:'video'},{name:'song.mp3',icon:'🎵',type:'audio'},{name:'wallpaper.jpg',icon:'🖼️',type:'image'},{name:'document.pdf',icon:'📕',type:'pdf'}]},
+    {name:'Pictures',icon:'🖼️',type:'folder',children:[{name:'Wallpapers',icon:'📁',type:'folder',children:[{name:'mountain.jpg',icon:'🏔️',type:'image'},{name:'ocean.jpg',icon:'🌊',type:'image'},{name:'forest.jpg',icon:'🌲',type:'image'}]},{name:'Screenshots',icon:'📁',type:'folder',children:[]},{name:'avatar.png',icon:'👤',type:'image'}]},
+    {name:'Music',icon:'🎵',type:'folder',children:[{name:'Playlist.m3u',icon:'🎶',type:'audio'},{name:'song1.mp3',icon:'🎵',type:'audio'},{name:'song2.mp3',icon:'🎵',type:'audio'},{name:'podcast.mp3',icon:'🎙️',type:'audio'}]},
+    {name:'Movies',icon:'🎬',type:'folder',children:[{name:'video1.mp4',icon:'🎬',type:'video'},{name:'video2.mov',icon:'🎬',type:'video'}]},
+    {name:'Library',icon:'📚',type:'folder',children:[{name:'Preferences',icon:'📁',type:'folder',children:[]},{name:'Logs',icon:'📁',type:'folder',children:[]}]},
+  ]
+};
+
+function getCurrentFinderItems(){let c=fakeFS;for(const p of finderPath){if(p==='/')continue;const f=c.find(i=>i.name===p);if(f?.children)c=f.children;else break;}return c;}
+function getFinderItemHTML(item){
+  const isFolder=item.type==='folder';
+  const click=isFolder?`onclick="finderOpenFolder('${item.name}')"`:`ondblclick="showNotification('Finder','Opening ${item.name}...')" `;
+  return `<div class="finder-item" ${click}><div class="icon">${item.icon}</div><div class="name">${item.name}</div></div>`;
+}
+function getFinderContent(){
+  const items=getCurrentFinderItems();
+  return `<div class="finder-body"><div class="finder-sidebar"><div class="finder-sidebar-title">Favorites</div><div class="finder-sidebar-item" onclick="finderNav(['/'])">🏠 Desktop</div><div class="finder-sidebar-item" onclick="finderNav(['/Applications'])">💻 Applications</div><div class="finder-sidebar-item" onclick="finderNav(['/Documents'])">📄 Documents</div><div class="finder-sidebar-item" onclick="finderNav(['/Downloads'])">📥 Downloads</div><div class="finder-sidebar-item" onclick="finderNav(['/Pictures'])">🖼️ Pictures</div><div class="finder-sidebar-item" onclick="finderNav(['/Music'])">🎵 Music</div><div class="finder-sidebar-item" onclick="finderNav(['/Movies'])">🎬 Movies</div><div class="finder-sidebar-title" style="margin-top:12px">Locations</div><div class="finder-sidebar-item" onclick="finderNav(['/'])">💻 My Mac</div><div class="finder-sidebar-item" onclick="showNotification('Finder','Connecting...')">🌐 Network</div></div><div class="finder-content-area"><div class="finder-toolbar"><button class="toolbar-btn" onclick="finderBack()" id="finder-back-btn">◀</button><button class="toolbar-btn" onclick="showNotification('Finder','Forward')">▶</button><button class="toolbar-btn" onclick="showNotification('Finder','Up')">▲</button><span class="breadcrumb" id="finder-breadcrumb">/</span><button class="toolbar-btn" onclick="toggleFinderInfo()" title="Get Info">ℹ</button></div><div class="finder-content" id="finder-content">${items.map(i=>getFinderItemHTML(i)).join('')}</div></div><div class="finder-info-panel" id="finder-info"><div class="info-icon" id="info-icon">📁</div><div class="info-name" id="info-name">Folder</div><div class="info-row"><span class="info-label">Kind</span><span class="info-value" id="info-kind">Folder</span></div><div class="info-row"><span class="info-label">Size</span><span class="info-value" id="info-size">—</span></div><div class="info-row"><span class="info-label">Created</span><span class="info-value" id="info-created">—</span></div><div class="info-row"><span class="info-label">Location</span><span class="info-value" id="info-location">/</span></div></div></div>`;
+}
+function finderNav(path){finderPath=path;const win=Object.values(openWindows).find(w=>w.appId==='finder');if(!win)return;win.el.querySelector('.finder-content').innerHTML=getCurrentFinderItems().map(i=>getFinderItemHTML(i)).join('');const bc=win.el.querySelector('.breadcrumb');if(bc)bc.textContent='/'+path.slice(1).join('/');updateFinderBack();win.el.querySelectorAll('.finder-sidebar-item').forEach(el=>el.classList.remove('selected'));event.target.classList.add('selected');}
+function finderOpenFolder(name){finderPath.push(name);const win=Object.values(openWindows).find(w=>w.appId==='finder');if(!win)return;win.el.querySelector('.finder-content').innerHTML=getCurrentFinderItems().map(i=>getFinderItemHTML(i)).join('');const bc=win.el.querySelector('.breadcrumb');if(bc)bc.textContent='/'+finderPath.slice(1).join('/');updateFinderBack();}
+function finderBack(){if(finderPath.length>1){finderPath.pop();const win=Object.values(openWindows).find(w=>w.appId==='finder');if(!win)return;win.el.querySelector('.finder-content').innerHTML=getCurrentFinderItems().map(i=>getFinderItemHTML(i)).join('');const bc=win.el.querySelector('.breadcrumb');if(bc)bc.textContent='/'+finderPath.slice(1).join('/');updateFinderBack();}}
+function updateFinderBack(){const btn=document.getElementById('finder-back-btn');if(btn)btn.disabled=finderPath.length<=1;}
+function toggleFinderInfo(){const panel=document.getElementById('finder-info');if(panel)panel.classList.toggle('show');}
+
+// ===== TERMINAL =====
+function getTerminalContent(){
+  return `<div style="height:100%;display:flex;flex-direction:column;background:#1a1a1a;"><div class="terminal-output" id="terminal-output"><div style="color:#888;">Last login: ${new Date().toString()}</div><div style="color:#888;">Welcome to macOS Terminal (simulated)</div><br></div><div class="terminal-input-row"><span class="prompt">saurav@mac ~ %</span><input id="terminal-input" onkeydown="handleTerminal(event)" placeholder=""></div></div>`;
+}
+function handleTerminal(e){
+  if(e.key!=='Enter')return;
+  const input=document.getElementById('terminal-input');if(!input)return;
+  const output=document.getElementById('terminal-output');if(!output)return;
+  const cmd=input.value.trim();input.value='';
+  output.innerHTML+=`<div><span style="color:#33ff33">saurav@mac ~ % </span><span style="color:#fff">${cmd}</span></div>`;
+  let r='';const L=cmd.toLowerCase();
+  if(!cmd)r='';
+  else if(L==='ls')r='Applications  Desktop  Documents  Downloads  Library  Movies  Music  Pictures  Public';
+  else if(L==='pwd')r='/Users/saurav';
+  else if(L==='whoami')r='saurav';
+  else if(L==='date')r=new Date().toString();
+  else if(L==='uname -a')r='Darwin Mac 23.0.0 Darwin Kernel Version 23.0.0';
+  else if(L.startsWith('echo '))r=cmd.substring(5);
+  else if(L==='clear'){output.innerHTML='';r=null;}
+  else if(L==='help')r='Available: ls, pwd, whoami, date, uname -a, echo, clear, help, neofetch, uptime, who, cal, cowsay, fortune';
+  else if(L==='uptime')r=`${Math.floor(Math.random()*24)}:${String(Math.floor(Math.random()*60)).padStart(2,'0')} up ${Math.floor(Math.random()*30+1)} days, ${Math.floor(Math.random()*24)}:${String(Math.floor(Math.random()*60)).padStart(2,'0')}, 1 user`;
+  else if(L==='who')r='saurav  ttys000  Apr 18 10:30';
+  else if(L==='cal'){const now=new Date();r=`     ${now.toLocaleString('en-US',{month:'long'})} ${now.getFullYear()}\nSu Mo Tu We Th Fr Sa\n`;let first=new Date(now.getFullYear(),now.getMonth(),1).getDay();let days=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();let line='   '.repeat(first);for(let d=1;d<=days;d++){line+=String(d).padStart(4);if((first+d)%7===0){r+=line+'\n';line='';}}if(line)r+=line+'\n';}
+  else if(L.startsWith('cowsay '))r=` __${'<'.repeat(cmd.length-6)}_\n| ${cmd.substring(7)} |\n ${(cmd.length-6>0?'^':'')}\\___/${(cmd.length-6>0?'':'')} `;
+  else if(L==='fortune')r=['The best way to predict the future is to create it.','Code is poetry.','Stay hungry, stay foolish.','In the middle of difficulty lies opportunity.'][Math.floor(Math.random()*4)];
+  else r=`zsh: command not found: ${cmd.split(' ')[0]}`;
+  if(r!==null)output.innerHTML+=`<div style="color:#ccc;white-space:pre-wrap">${r}</div>`;
+  output.innerHTML+='<br>';output.scrollTop=output.scrollHeight;
+}
+
+// ===== PHOTOS =====
+let currentViewerIndex=0;
+const photoData=[
+  {emoji:'🌅',bg:'linear-gradient(135deg,#f093fb,#f5576c)',name:'Sunset',size:'4.2 MB',dims:'4032×3024'},
+  {emoji:'🏔️',bg:'linear-gradient(135deg,#4facfe,#00f2fe)',name:'Mountains',size:'5.1 MB',dims:'5184×3456'},
+  {emoji:'🌊',bg:'linear-gradient(135deg,#43e97b,#38f9d7)',name:'Ocean Waves',size:'3.8 MB',dims:'4032×3024'},
+  {emoji:'🌺',bg:'linear-gradient(135deg,#fa709a,#fee140)',name:'Flowers',size:'2.9 MB',dims:'3024×4032'},
+  {emoji:'🌈',bg:'linear-gradient(135deg,#a18cd1,#fbc2eb)',name:'Rainbow',size:'4.5 MB',dims:'4032×3024'},
+  {emoji:'🦋',bg:'linear-gradient(135deg,#ffecd2,#fcb69f)',name:'Butterfly',size:'3.2 MB',dims:'3456×5184'},
+  {emoji:'🌸',bg:'linear-gradient(135deg,#ff9a9e,#fad0c4)',name:'Cherry Blossom',size:'2.7 MB',dims:'4032×3024'},
+  {emoji:'🍁',bg:'linear-gradient(135deg,#f6d365,#fda085)',name:'Autumn Leaves',size:'4.0 MB',dims:'4032×3024'},
+  {emoji:'🌙',bg:'linear-gradient(135deg,#667eea,#764ba2)',name:'Moonlight',size:'3.5 MB',dims:'5184×3456'},
+  {emoji:'⭐',bg:'linear-gradient(135deg,#2c3e50,#3498db)',name:'Starfall',size:'5.3 MB',dims:'4032×3024'},
+  {emoji:'🏖️',bg:'linear-gradient(135deg,#89f7fe,#66a6ff)',name:'Beach',size:'4.1 MB',dims:'4032×3024'},
+  {emoji:'🌄',bg:'linear-gradient(135deg,#fddb92,#d1fdff)',name:'Dawn',size:'3.9 MB',dims:'5184×3456'},
+  {emoji:'🌲',bg:'linear-gradient(135deg,#134e5e,#71b280)',name:'Forest',size:'4.7 MB',dims:'4032×3024'},
+  {emoji:'🎆',bg:'linear-gradient(135deg,#c471f5,#fa71cd)',name:'Fireworks',size:'3.6 MB',dims:'4032×3024'},
+  {emoji:'🐚',bg:'linear-gradient(135deg,#e0c3fc,#8ec5fc)',name:'Seashell',size:'2.4 MB',dims:'3024×4032'},
+  {emoji:'🌻',bg:'linear-gradient(135deg,#f5af19,#f12711)',name:'Sunflower',size:'3.1 MB',dims:'4032×3024'},
+  {emoji:'🏞️',bg:'linear-gradient(135deg,#0bd,#eea2dd)',name:'Lake View',size:'5.0 MB',dims:'5184×3456'},
+  {emoji:'🌿',bg:'linear-gradient(135deg,#96fbc4,#f9f586)',name:'Garden',size:'2.8 MB',dims:'4032×3024'},
+  {emoji:'🎇',bg:'linear-gradient(135deg,#667eea,#764ba2)',name:'Sparkler',size:'3.3 MB',dims:'4032×3024'},
+  {emoji:'🌾',bg:'linear-gradient(135deg,#ffecd2,#fcb69f)',name:'Wheat Field',size:'4.4 MB',dims:'4032×3024'},
+];
+function initPhotos(){
+  const winId='win-'+(nextWinId++);
+  const gridHTML=photoData.map((p,i)=>`<div class="photo-thumb" style="background:${p.bg}" onclick="openPhotoViewer(${i})">${p.emoji}</div>`).join('');
+  createWindow('photos','Photos',680,460,`<div style="display:flex;flex-direction:column;height:100%"><div class="photos-toolbar"><span class="photos-title">Library</span><button class="toolbar-btn" onclick="showNotification('Photos','Importing...')">Import</button><button class="toolbar-btn" onclick="showNotification('Photos','New Album')">+ Album</button></div><div class="photos-grid">${gridHTML}</div></div>`);
+}
+function openPhotoViewer(idx){currentViewerIndex=idx;showPhotoViewer();}
+function showPhotoViewer(){
+  const p=photoData[currentViewerIndex];
+  document.getElementById('viewer-content').innerHTML=p.emoji;
+  document.getElementById('viewer-content').style.background=p.bg;
+  document.getElementById('viewer-content').style.borderRadius='12px';
+  document.getElementById('viewer-content').style.width='300px';document.getElementById('viewer-content').style.height='300px';
+  document.getElementById('viewer-content').style.display='flex';document.getElementById('viewer-content').style.alignItems='center';document.getElementById('viewer-content').style.justifyContent='center';
+  document.getElementById('viewer-info').textContent=`${p.name}  •  ${p.size}  •  ${p.dims}`;
+  document.getElementById('photo-viewer').classList.add('show');
+}
+function closePhotoViewer(){document.getElementById('photo-viewer').classList.remove('show');}
+function viewerNav(dir){currentViewerIndex=(currentViewerIndex+dir+photoData.length)%photoData.length;showPhotoViewer();}
+document.addEventListener('keydown',e=>{if(document.getElementById('photo-viewer').classList.contains('show')){if(e.key==='ArrowLeft')viewerNav(-1);if(e.key==='ArrowRight')viewerNav(1);if(e.key==='Escape')closePhotoViewer();}});
+
+// ===== SETTINGS =====
+function initSettings(){
+  const winId='win-'+(nextWinId++);
+  const categories=[
+    {id:'wifi',icon:'📶',name:'Wi-Fi'},{id:'bluetooth',icon:'🔵',name:'Bluetooth'},{id:'network',icon:'🌐',name:'Network'},
+    {id:'notifications',icon:'🔔',name:'Notifications'},{id:'sound',icon:'🔊',name:'Sound'},{id:'display',icon:'🖥️',name:'Displays'},
+    {id:'battery',icon:'🔋',name:'Battery'},{id:'wallpaper',icon:'🎨',name:'Wallpaper'},{id:'dock',icon:'📌',name:'Dock'},
+    {id:'focus',icon:'🎯',name:'Focus'},{id:'storage',icon:'💾',name:'Storage'},{id:'privacy',icon:'🔒',name:'Privacy'},
+  ];
+  const sidebarHTML=`<div class="settings-sidebar">${categories.map(c=>`<div class="settings-sidebar-item ${c.id==='wifi'?'active':''}" onclick="showSettingsPanel('${c.id}',this)">${c.icon} ${c.name}</div>`).join('')}</div>`;
+  createWindow('settings','Settings',650,460,`<div class="settings-layout">${sidebarHTML}<div class="settings-content" id="settings-content">${getSettingsPanel('wifi')}</div></div>`);
+}
+function getSettingsPanel(cat){
+  switch(cat){
+    case 'wifi': return `<h2>Wi-Fi</h2><div class="settings-card"><div class="settings-row"><span class="settings-label">Wi-Fi</span><div class="settings-toggle ${settingsState.wifiOn?'on':''}" onclick="this.classList.toggle('on');settingsState.wifiOn=!settingsState.wifiOn;saveSettings();showNotification('Wi-Fi',this.classList.contains('on')?'Connected':'Disconnected')"></div></div><div class="settings-row"><span class="settings-label">Network</span><span class="settings-value">${settingsState.wifiOn?settingsState.wifi:'Off'}</span></div></div><div class="settings-card"><div style="color:rgba(255,255,255,0.5);font-size:12px;padding:4px 0;">Available Networks</div><div class="settings-row"><span class="settings-label">📶 HomeNetwork</span><span class="settings-value" style="color:#34c759">Connected</span></div><div class="settings-row"><span class="settings-label">📶 Neighbor_WiFi</span><span class="settings-value">🔒</span></div><div class="settings-row"><span class="settings-label">📶 CoffeeShop_5G</span><span class="settings-value">Open</span></div></div>`;
+    case 'bluetooth': return `<h2>Bluetooth</h2><div class="settings-card"><div class="settings-row"><span class="settings-label">Bluetooth</span><div class="settings-toggle ${settingsState.bluetoothOn?'on':''}" onclick="this.classList.toggle('on');settingsState.bluetoothOn=!settingsState.bluetoothOn;saveSettings();showNotification('Bluetooth',this.classList.contains('on')?'On':'Off')"></div></div></div><div class="settings-card"><div style="color:rgba(255,255,255,0.5);font-size:12px;padding:4px 0;">My Devices</div><div class="settings-row"><span class="settings-label">🎧 AirPods Pro</span><span class="settings-value" style="color:#34c759">Connected</span></div><div class="settings-row"><span class="settings-label">⌨️ Magic Keyboard</span><span class="settings-value" style="color:#34c759">Connected</span></div><div class="settings-row"><span class="settings-label">🖱️ Magic Mouse</span><span class="settings-value">Not connected</span></div></div>`;
+    case 'sound': return `<h2>Sound</h2><div class="settings-card"><div class="settings-row"><span class="settings-label">Output Volume</span></div><div class="settings-row"><input type="range" class="settings-slider" min="0" max="100" value="${settingsState.sound}" oninput="settingsState.sound=+this.value;saveSettings();showNotification('Sound','Volume: '+this.value+'%')"></div></div><div class="settings-card"><div class="settings-row"><span class="settings-label">Alert Sound</span><span class="settings-value">Breeze</span></div><div class="settings-row"><span class="settings-label">Play sound on startup</span><div class="settings-toggle on" onclick="this.classList.toggle('on')"></div></div></div>`;
+    case 'display': return `<h2>Displays</h2><div class="settings-card"><div class="settings-row"><span class="settings-label">Brightness</span></div><div class="settings-row"><input type="range" class="settings-slider" min="0" max="100" value="${settingsState.brightness}" oninput="settingsState.brightness=+this.value;document.getElementById('desktop').style.filter='brightness('+(0.5+this.value/200)+')';showNotification('Display','Brightness: '+this.value+'%')"></div></div><div class="settings-card"><div class="settings-row"><span class="settings-label">Resolution</span><span class="settings-value">2560 × 1600 (Retina)</span></div><div class="settings-row"><span class="settings-label">True Tone</span><div class="settings-toggle on" onclick="this.classList.toggle('on')"></div></div><div class="settings-row"><span class="settings-label">Night Shift</span><div class="settings-toggle ${settingsState.nightShift?'on':''}" onclick="this.classList.toggle('on');settingsState.nightShift=!settingsState.nightShift;saveSettings()"></div></div></div>`;
+    case 'battery': return `<h2>Battery</h2><div class="settings-card"><div style="text-align:center;padding:10px;"><div style="font-size:64px;margin-bottom:8px;">🔋</div><div style="color:#34c759;font-size:28px;font-weight:600;">100%</div><div style="color:rgba(255,255,255,0.4);font-size:12px;">Fully Charged</div></div></div><div class="settings-card"><div class="settings-row"><span class="settings-label">Low Power Mode</span><div class="settings-toggle" onclick="this.classList.toggle('on');showNotification('Battery',this.classList.contains('on')?'Low Power Mode On':'Low Power Mode Off')"></div></div><div class="settings-row"><span class="settings-label">Optimized Battery Charging</span><div class="settings-toggle on" onclick="this.classList.toggle('on')"></div></div><div class="settings-row"><span class="settings-label">Battery Health</span><span class="settings-value">98%</span></div></div>`;
+    case 'wallpaper': return `<h2>Wallpaper</h2><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">${wallpapers.map((w,i)=>`<div style="width:120px;height:70px;background:${w};border-radius:8px;cursor:pointer;border:2px solid ${i===settingsState.wallpaper?'#648cff':'transparent'}" onclick="settingsState.wallpaper=${i};document.getElementById('desktop').style.background=wallpapers[${i}];saveSettings();showNotification('Wallpaper','Applied');this.parentElement.querySelectorAll('div').forEach(d=>d.style.borderColor='transparent');this.style.borderColor='#648cff'"></div>`).join('')}</div>`;
+    case 'dock': return `<h2>Dock</h2><div class="settings-card"><div class="settings-row"><span class="settings-label">Dock Size</span><span class="settings-value" id="dock-size-val">${settingsState.dockSize}px</span></div><div class="settings-row"><input type="range" class="settings-slider" min="32" max="80" value="${settingsState.dockSize}" oninput="settingsState.dockSize=+this.value;document.getElementById('dock-size-val').textContent=this.value+'px';document.querySelectorAll('.dock-item').forEach(d=>d.style.width=this.value+'px');document.querySelectorAll('.dock-item').forEach(d=>d.style.height=this.value+'px');saveSettings()"></div></div><div class="settings-card"><div class="settings-row"><span class="settings-label">Magnification</span><div class="settings-toggle on" onclick="this.classList.toggle('on');showNotification('Dock',this.classList.contains('on')?'Magnification On':'Magnification Off')"></div></div><div class="settings-row"><span class="settings-label">Minimize effect</span><div class="settings-toggle on" onclick="this.classList.toggle('on')"></div></div></div>`;
+    case 'focus': return `<h2>Focus</h2><div class="settings-card"><div class="settings-row"><span class="settings-label">Do Not Disturb</span><div class="settings-toggle ${settingsState.doNotDisturb?'on':''}" onclick="this.classList.toggle('on');settingsState.doNotDisturb=!settingsState.doNotDisturb;saveSettings();showNotification('Focus',this.classList.contains('on')?'Do Not Disturb On':'Off')"></div></div></div><div class="settings-card"><div class="settings-row"><span class="settings-label">AirDrop</span><span class="settings-value">${settingsState.airDrop}</span></div><div class="settings-row"><span class="settings-label">Allow sharing</span><div class="settings-select" onchange="settingsState.airDrop=this.value;saveSettings()"><option ${settingsState.airDrop==='Everyone'?'selected':''}>Everyone</option><option ${settingsState.airDrop==='Contacts Only'?'selected':''}>Contacts Only</option><option ${settingsState.airDrop==='Off'?'selected':''}>Off</option></div></div></div>`;
+    case 'storage': return `<h2>Storage</h2><div class="settings-card"><div style="margin-bottom:8px;"><div style="display:flex;gap:2px;height:16px;border-radius:4px;overflow:hidden;margin-bottom:8px;"><div style="width:35%;background:#648cff;"></div><div style="width:25%;background:#34c759;"></div><div style="width:20%;background:#ff9500;"></div><div style="width:12%;background:#ff3b30;"></div><div style="width:8%;background:#af52de;"></div></div><div style="display:flex;gap:12px;flex-wrap:wrap;"><span style="font-size:11px;color:rgba(255,255,255,0.5);">📱 Apps 35%</span><span style="font-size:11px;color:rgba(255,255,255,0.5);">📄 Documents 25%</span><span style="font-size:11px;color:rgba(255,255,255,0.5);">🎵 Media 20%</span><span style="font-size:11px;color:rgba(255,255,255,0.5);">📸 Photos 12%</span><span style="font-size:11px;color:rgba(255,255,255,0.5);">⚙️ System 8%</span></div></div><div class="settings-row"><span class="settings-label">Used</span><span class="settings-value">256 GB of 512 GB</span></div><div class="settings-row"><span class="settings-label">Available</span><span class="settings-value" style="color:#34c759">256 GB</span></div></div>`;
+    case 'privacy': return `<h2>Privacy & Security</h2><div class="settings-card"><div class="settings-row"><span class="settings-label">Location Services</span><div class="settings-toggle on" onclick="this.classList.toggle('on')"></div></div><div class="settings-row"><span class="settings-label">Camera Access</span><span class="settings-value">All granted</span></div><div class="settings-row"><span class="settings-label">Microphone Access</span><span class="settings-value">All granted</span></div><div class="settings-row"><span class="settings-label">File Vault</span><div class="settings-toggle on" onclick="this.classList.toggle('on');showNotification('Privacy','FileVault '+(!this.classList.contains('on')?'Off':'On'))"></div></div></div>`;
+    default: return `<h2>${cat}</h2><div class="settings-card"><div class="settings-row"><span class="settings-label">Settings</span><span class="settings-value">Coming soon</span></div></div>`;
+  }
+}
+function showSettingsPanel(cat,el){
+  const content=document.getElementById('settings-content');if(!content)return;
+  content.innerHTML=getSettingsPanel(cat);
+  el.parentElement.querySelectorAll('.settings-sidebar-item').forEach(i=>i.classList.remove('active'));el.classList.add('active');
+}
+
+// ===== BROWSER =====
+function initBrowser(){
+  const winId='win-'+(nextWinId++);
+  createWindow('browser','Browser',780,500,`<div style="display:flex;flex-direction:column;height:100%">
+    <div class="browser-toolbar">
+      <button class="browser-nav-btn" onclick="showNotification('Browser','Back')">◀</button>
+      <button class="browser-nav-btn" onclick="showNotification('Browser','Forward')">▶</button>
+      <button class="browser-nav-btn" onclick="showNotification('Browser','Reload')">↻</button>
+      <input class="browser-url-bar" id="browser-url-${winId}" value="https://www.apple.com" onkeydown="if(event.key==='Enter')browserNavigate('${winId}',this.value)">
+      <button class="browser-nav-btn" onclick="showNotification('Browser','Bookmarks')">⭐</button>
+    </div>
+    <div class="browser-bookmarks" id="browser-bm-${winId}">${renderBookmarks(winId)}</div>
+    <div class="browser-content" id="browser-page-${winId}">${getBrowserHomePage()}</div>
+  </div>`);
+}
+function renderBookmarks(winId){
+  return bookmarks.map((b,i)=>`<div class="browser-bookmark" onclick="browserNavigate('${winId}','${b.url}')">${b.icon} ${b.name} <span class="bm-remove" onclick="event.stopPropagation();removeBookmark(${i})">✕</span></div>`).join('');
+}
+function removeBookmark(i){bookmarks.splice(i,1);localStorage.setItem('macos-bookmarks',JSON.stringify(bookmarks));const el=document.getElementById('browser-bm-'+Object.keys(openWindows).find(k=>openWindows[k].appId==='browser'));if(el)el.innerHTML=renderBookmarks(Object.keys(openWindows).find(k=>openWindows[k].appId==='browser'));showNotification('Browser','Bookmark removed');}
+function getBrowserHomePage(){
+  return `<div class="browser-page"><div class="page-icon">🧭</div><div class="page-title">Safari</div><div class="page-desc">Browse the web</div><div class="quick-links">${bookmarks.map(b=>`<div class="quick-link" onclick="browserNavigate(null,'${b.url}')"><div class="ql-icon">${b.icon}</div><div class="ql-name">${b.name}</div></div>`).join('')}</div><div class="add-bookmark-btn" onclick="addBookmark()">+ Add Bookmark</div></div>`;
+}
+function browserNavigate(winId,url){
+  if(!url)return;
+  let domain='';try{domain=new URL(url).hostname.replace('www.','');}catch{domain=url;}
+  const icons={'apple':'🍎',google:'🔍',github:'🐙',youtube:'▶️',twitter:'🐦',amazon:'📦',wikipedia:'📚',reddit:'🤖',netflix:'🎬',spotify:'🎵'};
+  const icon=icons[domain]||'🌐';
+  const page=`<div class="browser-page"><div class="page-icon">${icon}</div><div class="page-title">${domain}</div><div class="page-desc">This is a simulated page for ${domain}</div><div style="color:rgba(255,255,255,0.3);font-size:13px;max-width:400px;text-align:center;line-height:1.6;">In a real browser, this would load the actual website. This is a simulated view for demonstration purposes.</div></div>`;
+  if(winId){const pg=document.getElementById('browser-page-'+winId);if(pg)pg.innerHTML=page;const urlBar=document.getElementById('browser-url-'+winId);if(urlBar)urlBar.value=url;}
+  showNotification('Browser','Loaded '+domain);
+}
+function addBookmark(){
+  const name=prompt('Bookmark name:','New Site');if(!name)return;
+  const url=prompt('URL:','https://example.com');if(!url)return;
+  bookmarks.push({name,url,icon:'🌐'});localStorage.setItem('macos-bookmarks',JSON.stringify(bookmarks));showNotification('Browser','Bookmark added: '+name);
+}
+
+// ===== MUSIC =====
+let musicPlaying=false,musicTrackIndex=0,musicProgress=0;
+const musicTracks=[
+  {title:'Midnight Dreams',artist:'Synthwave Collective',duration:'3:42',emoji:'🌙',bg:'linear-gradient(135deg,#667eea,#764ba2)'},
+  {title:'Electric Sunrise',artist:'Neon Pulse',duration:'4:15',emoji:'⚡',bg:'linear-gradient(135deg,#f093fb,#f5576c)'},
+  {title:'Ocean Waves',artist:'Chill Beats',duration:'5:01',emoji:'🌊',bg:'linear-gradient(135deg,#4facfe,#00f2fe)'},
+  {title:'Neon Lights',artist:'Retro Future',duration:'3:28',emoji:'💡',bg:'linear-gradient(135deg,#fa709a,#fee140)'},
+  {title:'Starfall',artist:'Ambient Flow',duration:'6:12',emoji:'⭐',bg:'linear-gradient(135deg,#a18cd1,#fbc2eb)'},
+  {title:'Digital Rain',artist:'Cyber Sound',duration:'4:45',emoji:'🌧️',bg:'linear-gradient(135deg,#89f7fe,#66a6ff)'},
+];
+function initMusic(){
+  const winId='win-'+(nextWinId++);
+  createWindow('music','Music',480,520,`<div class="music-layout" id="music-layout-${winId}">${getMusicUI(winId)}</div>`);
+  // Start progress simulation
+  setInterval(()=>{
+    if(!musicPlaying)return;
+    musicProgress+=0.5;
+    if(musicProgress>=100){musicProgress=0;musicTrackIndex=(musicTrackIndex+1)%musicTracks.length;}
+    const fill=document.querySelector('.music-progress-fill');if(fill)fill.style.width=musicProgress+'%';
+  },200);
+}
+function getMusicUI(winId){
+  const t=musicTracks[musicTrackIndex];
+  return `<div class="music-now-playing"><div class="music-artwork" style="background:${t.bg}">${t.emoji}</div><div class="music-song-title" id="music-title">${t.title}</div><div class="music-song-artist" id="music-artist">${t.artist}</div></div>
+  <div class="music-progress"><div class="music-progress-bar" onclick="musicSeek(event)"><div class="music-progress-fill" style="width:${musicProgress}%"></div></div><div class="music-progress-times"><span>${formatTime(musicProgress*0.01*222)}</span><span>${t.duration}</span></div></div>
+  <div class="music-controls"><button class="music-ctrl-btn" onclick="musicPrev()">⏮</button><button class="music-ctrl-btn play-btn" onclick="musicToggle('${winId}')">${musicPlaying?'⏸':'▶'}</button><button class="music-ctrl-btn" onclick="musicNext()">⏭</button></div>
+  <div class="music-volume"><span>🔈</span><input type="range" class="settings-slider" min="0" max="100" value="${settingsState.sound}" style="width:120px" oninput="settingsState.sound=+this.value;saveSettings()"><span>🔊</span></div>
+  <div class="music-playlist"><div class="music-playlist-title">Playlist</div>${musicTracks.map((tr,i)=>`<div class="music-track ${i===musicTrackIndex?'playing':''}" onclick="playTrack(${i},'${winId}')"><span class="track-num">${i===musicTrackIndex&&musicPlaying?'♫':(i+1)}</span><span class="track-emoji">${tr.emoji}</span><div class="track-info"><div class="track-name">${tr.title}</div><div class="track-artist">${tr.artist}</div></div><span class="track-dur">${tr.duration}</span></div>`).join('')}</div>`;
+}
+function musicToggle(winId){musicPlaying=!musicPlaying;const el=document.getElementById('music-layout-'+winId);if(el)el.innerHTML=getMusicUI(winId);}
+function musicNext(){musicTrackIndex=(musicTrackIndex+1)%musicTracks.length;musicProgress=0;showNotification('Music',musicTracks[musicTrackIndex].title);}
+function musicPrev(){musicTrackIndex=(musicTrackIndex-1+musicTracks.length)%musicTracks.length;musicProgress=0;showNotification('Music',musicTracks[musicTrackIndex].title);}
+function playTrack(idx,winId){musicTrackIndex=idx;musicProgress=0;musicPlaying=true;const el=document.getElementById('music-layout-'+winId);if(el)el.innerHTML=getMusicUI(winId);showNotification('Music','Now playing: '+musicTracks[idx].title);}
+function musicSeek(e){const bar=e.currentTarget;const rect=bar.getBoundingClientRect();musicProgress=((e.clientX-rect.left)/rect.width)*100;}
+function formatTime(sec){const m=Math.floor(sec/60);const s=Math.floor(sec%60);return m+':'+(s<10?'0':'')+s;}
+
+// ===== DESKTOP CLICK =====
+document.getElementById('desktop-area').addEventListener('click',e=>{if(e.target===e.currentTarget)document.getElementById('active-app-name').textContent='Finder';});
+
+// ===== INIT =====
+setTimeout(()=>openApp('finder'),300);
+</script>
+</body>
+</html>
