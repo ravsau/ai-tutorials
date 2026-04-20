@@ -12,6 +12,6 @@ These are the actual HTML files generated during the video. Same prompt, two mod
 
 ## MacOS Desktop Clone
 - `macos-desktop-qwen.html` — Qwen 3.6 (local via Ollama)
-- *(Claude version not included — see video for comparison)*
+- *(Claude version not available — Qwen overwrote the file with the same name during recording)*
 
 All generated with a single prompt. No manual edits.
