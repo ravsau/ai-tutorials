@@ -1,0 +1,31 @@
+=== Run metadata ===
+Date:           2026-04-21T04:40:49Z
+Ollama version: ollama version is 0.20.5
+macOS:          26.3
+Chip:           Apple M3 Max
+Memory (GB):    128
+Trials:         3
+
+=== Model IDs ===
+  [qwen3.5:35b-a3b-coding-nvfp4]   Model
+  [qwen3.5:35b-a3b-coding-nvfp4]     architecture        qwen3_5_moe    
+  [qwen3.5:35b-a3b-coding-nvfp4]     parameters          35.1B          
+  [qwen3.5:35b-a3b-coding-nvfp4]     context length      262144         
+  [qwen3.5:35b-a3b-coding-nvfp4]     embedding length    2048           
+  [qwen3.5:35b-a3b-coding-nvfp4]     quantization        nvfp4          
+  [qwen3.5:35b-a3b-coding-nvfp4]     requires            0.19.0         
+  [qwen3.5:35b-a3b-coding-nvfp4] 
+  [qwen3.5:35b-a3b-coding-nvfp4]   Capabilities
+  [qwen3.5:35b-a3b-coding-nvfp4]     completion    
+
+  [qwen3.5:35b-a3b]   Model
+  [qwen3.5:35b-a3b]     architecture        qwen35moe    
+  [qwen3.5:35b-a3b]     parameters          36.0B        
+  [qwen3.5:35b-a3b]     context length      262144       
+  [qwen3.5:35b-a3b]     embedding length    2048         
+  [qwen3.5:35b-a3b]     quantization        Q4_K_M       
+  [qwen3.5:35b-a3b]     requires            0.17.1       
+  [qwen3.5:35b-a3b] 
+  [qwen3.5:35b-a3b]   Capabilities
+  [qwen3.5:35b-a3b]     completion    
+

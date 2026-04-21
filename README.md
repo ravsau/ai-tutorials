@@ -7,6 +7,7 @@ Code, configs, and guides that accompany [CloudYeti](https://www.youtube.com/@Cl
 | Tutorial | Video | What you get |
 |----------|-------|-------------|
 | [Qwen 3.6 + Ollama](qwen3.6-ollama-free-coding-agent/) | [Watch](https://youtu.be/VjCPqmESUCg) | Free local Claude Code alternative. Settings.json, demo prompts, demo outputs. |
+| [Ollama MLX vs GGUF Benchmark](ollama-mlx-benchmark/) | Coming soon | Reproduce Ollama's 93% decode speedup on your own Mac. Modelfile, LiteLLM config, benchmark script. |
 | [Claude Code for YouTubers](claude-code-for-youtubers/) | [Watch](https://youtu.be/WcG055NcBIQ) | 7-stage content pipeline. Simplified CLAUDE.md system prompt. |
 | [Vibe Coding Guardrails](vibe-coding-guardrails/) | [Watch](https://youtu.be/A1rzbFsyu0w) | 8 security holes checklist. Gitleaks config, dual-agent prompt, RLS examples. |
 
