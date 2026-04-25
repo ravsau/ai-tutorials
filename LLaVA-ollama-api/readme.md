@@ -1,5 +1,7 @@
 # Hot Dog Not Hotdog Demo with LLaVa API on Ollama
 
+**Companion video:** [LLaVA Multi-Modal API with Ollama — Local AI on Mac](https://youtu.be/Tyg0PhjGGNU)
+
 ## Introduction
 Welcome to the demo app for the "Hot Dog or Not Hot Dog" application, inspired by the classic Silicon Valley show. This app utilizes the LLaVa model, capable of processing both text and images, and runs through the Ollama tool. This README accompanies a video tutorial demonstrating how to use the Ollama tool to run a LLaVa API server. Full code for this demo is available in this folder ( llava.py)
 

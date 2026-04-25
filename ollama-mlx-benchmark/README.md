@@ -1,12 +1,37 @@
 # Ollama MLX vs GGUF — Local Coding Agent Comparison
 
-Companion lab for the CloudYeti video: **$0 Claude Code on Mac: Ollama MLX Is Finally Ready (Qwen 3.5)**
+**Companion video:** [Ollama Just Got 2x Faster on Mac (Here's How)](https://youtu.be/HDlMRaJq8FE)
 
-Run the same Qwen 3.5-35B-A3B model through two different Ollama runtime paths — MLX/NVFP4 and GGUF/Q4_K_M — and measure the tokens/sec difference on your own Mac. One command to launch Claude Code against your local model at the end.
+Companion lab for the CloudYeti video on running **$0 Claude Code locally on a Mac using Ollama's new MLX engine**.
+
+---
+
+## 🚀 Just want to run Claude Code locally? (1 minute)
+
+If you watched the video and just want the one-command setup on your own Mac — this is all you need:
+
+```bash
+# 1. Install Ollama (if you haven't): https://ollama.com
+# 2. Pull the MLX model (~22 GB, one time):
+ollama pull qwen3.5:35b-a3b-coding-nvfp4
+
+# 3. Launch Claude Code against your local model:
+ollama launch claude --model qwen3.5:35b-a3b-coding-nvfp4
+```
+
+Claude Code opens, pointed at your local model. Zero API cost from this point on. **That's the whole setup.**
+
+If that's all you came for — skip to [Common issues](#common-issues) at the bottom if you hit something weird. Everything between is for people who want to benchmark and tune it themselves.
+
+---
+
+## 🔬 Want to reproduce the benchmark yourself? (10-15 minutes)
+
+Keep scrolling. The rest of the lab is how to run the same MLX vs GGUF comparison on your own Mac, capture per-trial numbers, and tune the Modelfile for daily use.
 
 ## What this lab is (and isn't)
 
-It's a **local runtime-path comparison**: same model family, same prompt, same hardware. The two tags differ in quant format (NVFP4 vs Q4_K_M) and default sampling params, so this isn't a pure backend-only A/B — it's "what the viewer actually experiences when they run each tag."
+It's a **local runtime-path comparison**: same model family, same prompt, same hardware. The two tags differ in quant format (NVFP4 vs Q4_K_M) and default sampling params, so this isn't a pure backend-only A/B — it's "what you actually experience when you run each tag."
 
 For a statistical benchmark you'd run hundreds of prompts across chips. This is a reproducible snapshot that shows the direction and rough magnitude of the speedup.
 
