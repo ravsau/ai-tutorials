@@ -1,0 +1,11 @@
+{
+  "provider": "ollama",
+  "baseUrl": "http://localhost:11434",
+  "model": "hf.co/unsloth/Qwen3.6-27B-GGUF:Q4_K_M",
+  "contextWindow": 65536,
+  "temperature": 0.6,
+  "topP": 0.95,
+  "topK": 20,
+  "minP": 0.0,
+  "_comment": "Temperature 0.6 is critical — Qwen 3.6 loops at lower temps (e.g. 0.1). Validated on r/LocalLLM 2026-04. If your harness reads sampling params elsewhere, mirror these there too."
+}

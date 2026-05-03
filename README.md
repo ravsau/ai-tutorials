@@ -6,6 +6,7 @@ Code, configs, and guides that accompany [CloudYeti](https://www.youtube.com/@Cl
 
 | Tutorial | Video | What you get |
 |----------|-------|--------------|
+| [Pi + Qwen 3.6 Local Coding Agent](pi-qwen-local-agent/) | Coming soon | Is Pi the agent for local coding? Setup, configs, demo prompts, FAQ. Tested on M3 Mac with Qwen 3.6 27B. |
 | [Ollama MLX vs GGUF Benchmark](ollama-mlx-benchmark/) | [Watch](https://youtu.be/HDlMRaJq8FE) | Reproduce Ollama's 93% decode speedup on Mac. Modelfile, LiteLLM config, benchmark script. |
 | [Claude Code for YouTubers](claude-code-for-youtubers/) | [Watch](https://youtu.be/WcG055NcBIQ) | 7-stage content pipeline. Simplified CLAUDE.md system prompt. |
 | [Qwen 3.6 + Ollama](qwen3.6-ollama-free-coding-agent/) | [Watch](https://youtu.be/VjCPqmESUCg) | Free local Claude Code alternative. settings.json, demo prompts, demo outputs. |
