@@ -6,6 +6,7 @@ Code, configs, and guides that accompany [CloudYeti](https://www.youtube.com/@Cl
 
 | Tutorial | Video | What you get |
 |----------|-------|--------------|
+| [OpenAI Codex /goal — The Ralph Loop](codex-goal-ralph-loop/) | Coming soon | OpenAI just shipped `/goal` (Codex CLI 0.128.0). Setup, the Ralph backstory (Geoffrey Huntley → Eric Traut), 7 ready-to-copy goal prompts, FAQ. |
 | [Pi + Qwen 3.6 Local Coding Agent](pi-qwen-local-agent/) | Coming soon | Is Pi the agent for local coding? Setup, configs, demo prompts, FAQ. Tested on M3 Mac with Qwen 3.6 27B. |
 | [Ollama MLX vs GGUF Benchmark](ollama-mlx-benchmark/) | [Watch](https://youtu.be/HDlMRaJq8FE) | Reproduce Ollama's 93% decode speedup on Mac. Modelfile, LiteLLM config, benchmark script. |
 | [Claude Code for YouTubers](claude-code-for-youtubers/) | [Watch](https://youtu.be/WcG055NcBIQ) | 7-stage content pipeline. Simplified CLAUDE.md system prompt. |

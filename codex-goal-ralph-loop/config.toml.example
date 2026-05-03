@@ -1,0 +1,6 @@
+# Example ~/.codex/config.toml — minimum to enable /goal
+# Copy the [features] block into your existing ~/.codex/config.toml,
+# or run `codex features enable goals` instead.
+
+[features]
+goals = true
