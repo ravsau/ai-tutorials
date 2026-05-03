@@ -131,6 +131,7 @@ The good goal has: specific scope, exact tools, exact endpoints, exact threshold
 
 ## See also
 
+- [`REAL-WORLD-DEMOS.md`](./REAL-WORLD-DEMOS.md) ⭐ — **the wow material.** 13 documented runs from the first 7 days post-launch: 300 bugs fixed overnight, 6.8M tokens at 94% cache hit, $4,200 in Stripe revenue from auto-built apps, OpenAI's own 1M-lines-of-production-code Symphony experiment.
 - [`examples/`](./examples/) — 7 ready-to-copy `/goal` prompts for common tasks
 - [`FAQ.md`](./FAQ.md) — questions before they hit the YouTube comments
 - [`demo-outputs/`](./demo-outputs/) — actual sessions from the video (added after recording)
