@@ -186,8 +186,12 @@ If something here is wrong, [open an issue](https://github.com/ravsau/ai-tutoria
 ## See also
 
 - [`FAQ.md`](./FAQ.md) — answers to questions before they hit the comments
-- [`demo-prompts/`](./demo-prompts/) — copy-pasteable tasks to try on your machine
-- [`benchmarks/`](./benchmarks/) — empty for now; PR your numbers and I'll merge
+- [`demo-prompts/`](./demo-prompts/) — the three test prompts from the video, ready to copy-paste:
+  - [Test 1 — small script with codebase context](./demo-prompts/01-github-repos-table.md)
+  - [Test 2 — bug fix workflow](./demo-prompts/02-bug-fix-workflow.md)
+  - [Test 3 — hard refactor (where it falls apart)](./demo-prompts/03-hard-refactor.md)
+- [`demo-outputs/`](./demo-outputs/) — actual sessions + diffs Pi produced on each test, for viewers who want the raw evidence (added per the comment requests on the [Qwen 3.6 video](https://youtu.be/VjCPqmESUCg))
+- [`benchmarks/`](./benchmarks/) — empty for now; PR your tokens-per-second from different hardware
 
 ## Contributing
 
