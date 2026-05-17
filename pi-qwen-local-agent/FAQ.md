@@ -8,6 +8,23 @@ Pre-seeded from competitor video comments and CloudYeti's prior local-AI uploads
 
 ## Hardware
 
+### What hardware did you use in the video, and is the video meant as a hardware guide?
+
+The video was a **test drive of Pi as a coding agent** — not a hardware tutorial. I'm on an **Apple M3 Max with 128 GB of unified memory**, which is well above what most viewers will have. I should have called that out in the recording.
+
+If you're on 16-32 GB and the 27B dense model won't fit, the better path is one of the smaller / MoE variants:
+
+| Setup | Recommended model | Notes |
+|---|---|---|
+| 16 GB Mac | `qwen3.6:8b-nvfp4` OR `gemma4:e4b-q4` | Smaller dense models. Lower capability, but Pi-compatible and fast. |
+| 24 GB Mac | `qwen3.6:8b-nvfp4` at Q5/Q6 | More room to push quality up. |
+| 32 GB Mac | `qwen3.6:30b-a3b` (MoE) at Q4 | A3B = mixture-of-experts with only ~3B params active per token. Faster than dense, but loops more on multi-step agent tasks (see MoE FAQ below). |
+| 36-128 GB Mac | `qwen3.6:27b-q4_K_M` (this lab's setup) | Best agentic-coding result per the r/LocalLLM thread. |
+
+**Important nuance on A3B / MoE:** Even though only ~3B params activate per token, **the full model weights still have to be loaded in memory**. A 30B-A3B model at Q4 is still ~17 GB on disk. So A3B helps with *speed*, not with *memory footprint*. For a true 16 GB-friendly setup, the 8B-class dense models are the safer bet.
+
+A hardware-floor-specific follow-up video is on the backlog. If you've got a working setup on tighter RAM, PR your benchmarks to [`benchmarks/`](./benchmarks/) — cross-hardware data points are what make this lab actually useful.
+
 ### Will this work on my 16/18GB Mac?
 
 Probably not for the 27B model. macOS itself uses ~6-8 GB, leaving ~8-10 GB for the model. The 27B Q4 quant is ~16 GB on disk and needs ~24-36 GB to run smoothly.
