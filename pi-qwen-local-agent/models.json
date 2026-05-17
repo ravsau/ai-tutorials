@@ -1,0 +1,45 @@
+{
+  "providers": {
+    "llama-cpp": {
+      "baseUrl": "http://localhost:8081/v1",
+      "api": "openai-completions",
+      "apiKey": "none",
+      "models": [
+        {
+          "id": "Qwen3.6-27B-GGUF"
+        }
+      ]
+    },
+    "mlx-lm": {
+      "baseUrl": "http://localhost:8080/v1",
+      "api": "openai-completions",
+      "apiKey": "none",
+      "models": [
+        {
+          "id": "unsloth/Qwen3.6-27B-UD-MLX-4bit"
+        }
+      ]
+    },
+    "ollama": {
+      "api": "openai-completions",
+      "apiKey": "ollama",
+      "baseUrl": "http://127.0.0.1:11434/v1",
+      "models": [
+        {
+          "_launch": true,
+          "contextWindow": 262144,
+          "id": "qwen3.6:27b-mlx-bf16",
+          "input": ["text", "image"],
+          "reasoning": true
+        },
+        {
+          "_launch": true,
+          "contextWindow": 262144,
+          "id": "qwen3.6:27b-q4_K_M",
+          "input": ["text", "image"],
+          "reasoning": true
+        }
+      ]
+    }
+  }
+}

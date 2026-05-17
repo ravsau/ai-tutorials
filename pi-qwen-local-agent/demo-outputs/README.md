@@ -1,28 +1,42 @@
-# Demo Outputs — Pi + Qwen 3.6 Test Runs
+# Demo Outputs — Dark Mode Toggle Lab
 
-Real outputs from running the [demo prompts](../demo-prompts/) on Saurav's 128GB M3 Mac with Qwen 3.6 27B Q4_K_M via `ollama launch pi`.
+The video's main demo asks Pi to add a dark mode toggle to a simple page, then iterates on real bugs. Here's what you need to reproduce your own version of that journey on your machine.
 
-Viewers in the [Qwen 3.6 video](https://youtu.be/VjCPqmESUCg) asked for the actual generated outputs side-by-side. Same here.
+## What's here
 
-## Expected files (will be added once recording is done)
-
-| File | What it contains |
+| File | What it is |
 |---|---|
-| `01-github-repos-session.txt` | Pi's session for Test 1 — GitHub repos markdown table prompt |
-| `01-github-repos-output.md` | The actual table Pi produced |
-| `02-bug-fix-session.txt` | Pi's session for Test 2 — debugging the auth middleware |
-| `02-bug-fix.diff` | The diff Pi committed to fix the bug |
-| `03-hard-refactor-session.txt` | Pi's session for Test 3 — fetch → @platform/http refactor |
-| `03-hard-refactor.diff` | What Pi produced (partially correct, honest result) |
-| `03-hard-refactor-test-results.txt` | Which tests passed vs failed after Pi's refactor |
-| `03-hard-refactor-claude.diff` | Same prompt to Claude Code on Sonnet/Opus, for comparison |
+| [`starter.html`](./starter.html) | The starting state — a simple card with text, **no toggle**. This is what you open and hand to Pi. |
 
-## Why this folder exists
+## How to reproduce the lab on your machine
 
-The video's verdict ("80% of work moves local, 20% stays on Claude") rests on these outputs being real and reproducible. If a viewer wants to see exactly what Pi produced at each step, they can read the diffs and sessions here without having to re-run anything.
+1. **Get Pi running** — follow the [setup in the main README](../README.md). Make sure `llama-server` is running on port 8081 and Pi sees it via `models.json`.
 
-## Reproducing on your own machine
+2. **Open `starter.html`** in your browser. It's a plain card with a heading and a paragraph. No JavaScript, no toggle, no theme switching.
 
-Each demo prompt's markdown file has the exact prompt + setup. Clone this repo, install the [setup](../README.md), and run the same prompts. Your tokens-per-second and exact code will vary, but the *pattern* (works for Test 1 + 2, partial on Test 3) should reproduce on any 32-128GB Apple Silicon Mac.
+3. **Open Pi in the same folder:**
+   ```bash
+   cd demo-outputs
+   pi
+   ```
 
-PRs welcome with your own outputs from different hardware — open one and we'll add it as a comparison datapoint.
+4. **Give it the prompt:**
+   > *"Create a simple dark mode toggle for this page. Save the user's preference and respect the system theme on first visit."*
+
+5. **Watch what Pi does.** Open the file in the browser after each edit. When you hit a bug — toggle invisible, overlapping the heading, whatever — push back in plain English. *"The toggle is invisible in light mode, fix that."*
+
+6. **Keep iterating.** This is the point of the lab. You're not following a tutorial — you're running a real coding session against a local model.
+
+## What your output will look like
+
+Different from mine. Different from everyone else's. That's the lab format — same starting state, same first prompt, but every viewer's iteration journey produces a different end state.
+
+If you want to share what you ended up with, open a PR and add your version under your handle. Cross-machine data points are what make this useful.
+
+## Honest expectations
+
+- **Round 1:** Pi will probably get most of the structure right (theme variables, animated switch, local storage).
+- **Round 2-5:** Visual bugs — toggle invisible against light background, overlapping the heading, color blending into the card. Push back. Pi reasons about each.
+- **The "going nuclear" moment:** somewhere around iteration 4-5, you'll either tell Pi to do something drastic, or it'll volunteer one. That's the moment in the video. Yours may land differently.
+
+Total time on a Mac M3 with Qwen 3.6 27B Q4 via `llama.cpp`: about 15-20 minutes for the full iteration session.
