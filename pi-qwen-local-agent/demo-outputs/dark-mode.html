@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Mode Lab — Starter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body.dark {
+            background: #1a1a2e;
+            color: #e0e0e0;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 2.5rem;
+            max-width: 540px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        body.dark .card {
+            background: #16213e;
+            border-color: #0f3460;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        h1 {
+            margin-bottom: 1rem;
+            font-size: 1.75rem;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+            transition: color 0.3s ease;
+        }
+
+        body.dark p {
+            color: #b0b0b0;
+        }
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Toggle Switch */
+        .toggle-wrapper {
+            position: fixed;
+            top: 1.5rem;
+            right: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .toggle-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #555;
+            transition: color 0.3s ease;
+            user-select: none;
+        }
+
+        body.dark .toggle-label {
+            color: #b0b0b0;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 52px;
+            height: 28px;
+            cursor: pointer;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            inset: 0;
+            background: #ccc;
+            border-radius: 28px;
+            transition: background 0.3s ease;
+        }
+
+        .slider::before {
+            content: "";
+            position: absolute;
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch input:checked + .slider {
+            background: #4fc3f7;
+        }
+
+        .toggle-switch input:checked + .slider::before {
+            transform: translateX(24px);
+        }
+
+        .icon {
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="toggle-wrapper">
+        <span class="icon">☀️</span>
+        <label class="toggle-switch">
+            <input type="checkbox" id="darkToggle">
+            <span class="slider"></span>
+        </label>
+        <span class="icon">🌙</span>
+        <span class="toggle-label">Dark Mode</span>
+    </div>
+
+    <div class="card">
+        <h1>Dark Mode Lab</h1>
+        <p>This is the starter page for the Pi + Qwen 3.6 dark mode toggle lab.</p>
+        <p>Open this file in your browser, then ask Pi to add a dark mode toggle. Watch what your local agent does — and iterate from there.</p>
+        <p>Your final result will be different from anyone else's. That is the point.</p>
+    </div>
+
+    <script>
+        const toggle = document.getElementById('darkToggle');
+        const body = document.body;
+
+        // Respect system preference on first visit
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const saved = localStorage.getItem('darkMode');
+        const isDark = saved !== null ? saved === 'true' : prefersDark;
+
+        if (isDark) {
+            body.classList.add('dark');
+            toggle.checked = true;
+        }
+
+        toggle.addEventListener('change', () => {
+            const dark = toggle.checked;
+            body.classList.toggle('dark', dark);
+            localStorage.setItem('darkMode', dark);
+        });
+    </script>
+</body>
+</html>
