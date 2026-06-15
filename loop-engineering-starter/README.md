@@ -15,6 +15,12 @@ The simplest possible loop in Claude Code. One command. One file. That's it.
 3. It implements the task and marks it done
 4. Add another task from a different session — the loop picks it up
 
+## Tips
+
+- Keep tasks small and specific — one task per line works best
+- The agent implements in order, top to bottom
+- Add tasks from any session or editor; the loop picks them up on the next cycle
+
 ## Expanding from here
 
 - Add a state file to survive restarts
