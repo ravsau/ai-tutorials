@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loop Engineering — Teleprompter</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0d0d0d;
+    color: #f0f0f0;
+    font-family: 'Georgia', serif;
+    font-size: 2rem;
+    line-height: 1.8;
+    padding: 4rem 8rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .segment {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  .label {
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.8rem;
+  }
+  .hook { color: #f0f0f0; }
+  .seed { color: #c8d8ff; }
+  .demo { color: #f0f0f0; }
+  .expand { color: #d4f0c8; }
+  .cta { color: #ffd580; }
+  code {
+    font-family: monospace;
+    font-size: 1.6rem;
+    background: #1a1a1a;
+    padding: 0.2em 0.5em;
+    border-radius: 4px;
+    color: #7dd3fc;
+  }
+  .pause {
+    color: #444;
+    font-size: 1rem;
+    font-family: monospace;
+    margin: 1rem 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="segment">
+  <div class="label">HOOK — 0:00–0:25</div>
+  <p class="hook">
+    Boris Cherny, who runs Claude Code at Anthropic, recently said: "I don't prompt Claude anymore. I have loops running. My job is to write loops."<br><br>
+    Peter Steinberger — creator of OpenClaw — said something similar: "You shouldn't be prompting coding agents anymore. You should be designing loops that prompt your agents."<br><br>
+    Now everyone is talking about loop engineering. There are hundreds of articles, 14-step roadmaps, five-building-block guides, pages and pages of it.
+  </p>
+</div>
+
+<div class="segment">
+  <div class="label">SEED — 0:25–0:45</div>
+  <p class="seed">
+    I'm not going to do that.<br><br>
+    I'm going to show you one command — and you'll understand what the fuss is about in under five minutes.<br><br>
+    From there, you build the version that fits your workflow. Because everyone's is different.
+  </p>
+</div>
+
+<div class="segment">
+  <div class="label">HELP OFFER — 0:40–1:00</div>
+  <p class="demo">
+    By the way — if you're running into issues with Claude Code or your AI setup at work, I do quick consulting calls. Link is in the description. Now let's get into it.
+  </p>
+</div>
+
+<div class="segment">
+  <div class="label">DEMO — THE COMMAND — 1:00–1:30</div>
+  <p class="demo">
+    Here's the command:
+  </p>
+  <br>
+  <code>/loop 2m /goal Check tasks.md and implement every pending task</code>
+  <br><br>
+  <p class="demo">
+    That's it. <br><br>
+    <code>/loop 2m</code> — Claude checks every 2 minutes.<br>
+    <code>/goal</code> — it keeps working until the condition is met.<br>
+    <code>tasks.md</code> — a plain file where you write what you want done.
+  </p>
+</div>
+
+<div class="segment">
+  <div class="label">DEMO — SHOW THE FILE — 1:30–2:00</div>
+  <p class="demo">
+    Here's what tasks.md looks like. Two tasks, both marked pending.
+  </p>
+  <div class="pause">[ show tasks.md in editor ]</div>
+  <p class="demo">
+    I run the command. Claude reads the file, implements the first task, marks it done, moves to the second.<br><br>
+    I didn't type a single prompt. I designed what I wanted — the loop did the rest.
+  </p>
+</div>
+
+<div class="segment">
+  <div class="label">DEMO — LOOP IN ACTION — 2:00–3:00</div>
+  <p class="demo">
+    Now — here's the part that makes this real.<br><br>
+    I open a second terminal. I add a new task to tasks.md from a completely separate session.
+  </p>
+  <div class="pause">[ type new task into tasks.md live ]</div>
+  <p class="demo">
+    Two minutes later, the loop fires again. It picks up the new task. Implements it. Marks it done.<br><br>
+    I never touched the first session.
+  </p>
+  <div class="pause">[ show loop firing, task completed ]</div>
+</div>
+
+<div class="segment">
+  <div class="label">EXPAND — WHERE TO TAKE IT — 3:00–4:00</div>
+  <p class="expand">
+    That's the starter. Here's what people build from here:<br><br>
+    A <strong>state file</strong> — so the loop remembers what it did yesterday and resumes instead of restarting.<br><br>
+    A <strong>verifier</strong> — a test suite or type check that fails bad code automatically. Without one, the agent grades its own homework.<br><br>
+    <strong>MCP connectors</strong> — GitHub, Slack, Linear. The loop opens the PR and pings you when it's done. You just review.<br><br>
+    <code>/schedule</code> — move the loop to the cloud so it runs after you close the laptop.<br><br>
+    One thing though — don't skip the verifier. A loop without a real check is just the agent agreeing with itself. The articles are right about that part.
+  </p>
+</div>
+
+<div class="segment">
+  <div class="label">CLOSE — 4:00–4:30</div>
+  <p class="demo">
+    The repo is linked below. It has tasks.md, the README, and a few starter examples.<br><br>
+    Clone it, swap in your own tasks, run the command. That's your first loop.<br><br>
+    From there, everyone's workflow is different — build the version that fits yours.
+  </p>
+</div>
+
+<div class="segment">
+  <div class="label">CARDS — fill in BEFORE recording</div>
+  <p class="cta">
+    - [ ] Card 1 timestamp: ~1:10 → links to: [Claude Code full setup video]<br>
+    - [ ] Card 2 timestamp: ~3:20 → links to: [MCP connectors / Claude Code tools playlist]<br>
+    - [ ] Card 3 timestamp: ~4:00 → links to: [codex-goal-ralph-loop demo video]
+  </p>
+  <br>
+  <p class="cta">
+    END SCREEN:<br>
+    - [ ] Slot 1: Best-fit related video (Claude Code agentic workflows)<br>
+    - [ ] Slot 2: Playlist this video belongs to
+  </p>
+</div>
+
+</body>
+</html>
