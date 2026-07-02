@@ -17,3 +17,6 @@ venv/
 *.tfstate.backup
 .terraform/
 .terraform.lock.hcl
+
+# local recording notes
+gemma4-ollama-mlx-mtp/transcript.md
