@@ -1,0 +1,61 @@
+{
+  "model": "gemma4:26b-mlx",
+  "runs": 3,
+  "num_predict": 256,
+  "temperature": 0.2,
+  "prompt": "Explain multi-token prediction in practical terms for a developer using local AI on a Mac. Keep it under 180 words.",
+  "created_at": "20260702T003518Z",
+  "rows": [
+    {
+      "model": "gemma4:26b-mlx",
+      "run": 1,
+      "created_at": "2026-07-02T00:35:12.583307Z",
+      "done_reason": "length",
+      "prompt_eval_count": 43,
+      "prompt_eval_duration_ns": 733498541,
+      "prompt_tok_s": 58.623156825065855,
+      "eval_count": 256,
+      "eval_duration_ns": 3668778750,
+      "eval_tok_s": 69.77798811116642,
+      "total_duration_ns": 7182498500,
+      "total_s_ollama": 7.1824985,
+      "total_s_wall": 7.193885333,
+      "load_duration_s": 2.7793005,
+      "response_preview": ""
+    },
+    {
+      "model": "gemma4:26b-mlx",
+      "run": 2,
+      "created_at": "2026-07-02T00:35:15.361127Z",
+      "done_reason": "length",
+      "prompt_eval_count": 43,
+      "prompt_eval_duration_ns": 833,
+      "prompt_tok_s": 51620648.25930372,
+      "eval_count": 256,
+      "eval_duration_ns": 2736190834,
+      "eval_tok_s": 93.56072566976519,
+      "total_duration_ns": 2774503042,
+      "total_s_ollama": 2.774503042,
+      "total_s_wall": 2.7770221250000002,
+      "load_duration_s": 0.037779209,
+      "response_preview": ""
+    },
+    {
+      "model": "gemma4:26b-mlx",
+      "run": 3,
+      "created_at": "2026-07-02T00:35:18.449555Z",
+      "done_reason": "length",
+      "prompt_eval_count": 43,
+      "prompt_eval_duration_ns": 917,
+      "prompt_tok_s": 46892039.25845148,
+      "eval_count": 256,
+      "eval_duration_ns": 3048895500,
+      "eval_tok_s": 83.96483251065837,
+      "total_duration_ns": 3086128084,
+      "total_s_ollama": 3.086128084,
+      "total_s_wall": 3.0885035,
+      "load_duration_s": 0.03667775,
+      "response_preview": ""
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "model": "gemma4:26b-mlx",
+  "runs": 3,
+  "num_predict": 256,
+  "temperature": 0.2,
+  "prompt": "You are helping benchmark a local coding model. Write a Python function called summarize_results(rows) that accepts a list of dicts with keys model, run, eval_tokens, eval_tok_s, and total_s. It should return a markdown table sorted by eval_tok_s descending. Include a tiny example input and output.",
+  "created_at": "20260702T004002Z",
+  "rows": [
+    {
+      "model": "gemma4:26b-mlx",
+      "run": 1,
+      "created_at": "2026-07-02T00:39:57.819992Z",
+      "done_reason": "length",
+      "prompt_eval_count": 87,
+      "prompt_eval_duration_ns": 273988708,
+      "prompt_tok_s": 317.5313341745456,
+      "eval_count": 256,
+      "eval_duration_ns": 3151729125,
+      "eval_tok_s": 81.22525440697572,
+      "total_duration_ns": 3496168375,
+      "total_s_ollama": 3.496168375,
+      "total_s_wall": 3.5042445,
+      "load_duration_s": 0.069535709,
+      "response_preview": ""
+    },
+    {
+      "model": "gemma4:26b-mlx",
+      "run": 2,
+      "created_at": "2026-07-02T00:40:00.374097Z",
+      "done_reason": "length",
+      "prompt_eval_count": 87,
+      "prompt_eval_duration_ns": 875,
+      "prompt_tok_s": 99428571.42857143,
+      "eval_count": 256,
+      "eval_duration_ns": 2509765583,
+      "eval_tok_s": 102.00155812719183,
+      "total_duration_ns": 2550078209,
+      "total_s_ollama": 2.550078209,
+      "total_s_wall": 2.5531954580000003,
+      "load_duration_s": 0.039566625,
+      "response_preview": ""
+    },
+    {
+      "model": "gemma4:26b-mlx",
+      "run": 3,
+      "created_at": "2026-07-02T00:40:02.904751Z",
+      "done_reason": "length",
+      "prompt_eval_count": 87,
+      "prompt_eval_duration_ns": 958,
+      "prompt_tok_s": 90814196.2421712,
+      "eval_count": 256,
+      "eval_duration_ns": 2489762833,
+      "eval_tok_s": 102.82103845671794,
+      "total_duration_ns": 2527471375,
+      "total_s_ollama": 2.527471375,
+      "total_s_wall": 2.5311677920000006,
+      "load_duration_s": 0.036991291,
+      "response_preview": ""
+    }
+  ]
+}

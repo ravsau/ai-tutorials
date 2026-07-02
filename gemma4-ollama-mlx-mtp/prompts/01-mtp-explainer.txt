@@ -1,0 +1,1 @@
+Explain multi-token prediction in practical terms for a developer using local AI on a Mac. Keep it under 180 words. Include one analogy and one caveat.

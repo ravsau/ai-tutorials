@@ -1,0 +1,1 @@
+You are helping benchmark a local coding model. Write a Python function called summarize_results(rows) that accepts a list of dicts with keys model, run, eval_tokens, eval_tok_s, and total_s. It should return a markdown table sorted by eval_tok_s descending. Include a tiny example input and output.
