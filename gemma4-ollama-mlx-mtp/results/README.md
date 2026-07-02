@@ -1,32 +1,26 @@
 # Results
 
-Paste benchmark outputs here after running:
+Run from the repo root:
 
 ```bash
-python3 scripts/benchmark_ollama.py --model gemma4:12b-mlx --runs 3
-python3 scripts/benchmark_ollama.py --model gemma4:26b-mlx --runs 3
-python3 scripts/benchmark_ollama.py --model gemma4:31b-mlx --runs 3
+python3 benchmark.py
 ```
 
-Optional backend comparison, clearly labeled MLX vs non-MLX:
+Or skip the pull step if `gemma4:26b-mlx` is already installed:
 
 ```bash
-python3 scripts/benchmark_ollama.py --model gemma4:12b --runs 3
-python3 scripts/benchmark_ollama.py --model gemma4:12b-mlx --runs 3
+python3 benchmark.py --no-pull
 ```
 
-## Recording notes
+The script saves a `.json` file and a `.md` file here for each benchmark run.
 
-| Model | Runs | Median decode tok/s | Median prompt tok/s | Notes |
-|---|---:|---:|---:|---|
-| `gemma4:12b-mlx` |  |  |  | primary tweet-match test |
-| `gemma4:26b-mlx` | 3 | 83.96 | ignore cached prefill value | Short explainer prompt; saved in `results/gemma4-26b-mlx-20260702T003518Z.md` |
-| `gemma4:26b-mlx` coding prompt | 3 | 102.00 | ignore cached prefill value | Coding-style prompt; saved in `results/gemma4-26b-mlx-20260702T004002Z.md` |
-| `gemma4:31b-mlx` |  |  |  | optional 128GB Mac flex |
-| `gemma4:12b` |  |  |  | optional MLX vs non-MLX only |
+## Current local results
 
-## Honest comparison language
+| Prompt | Runs | Median decode tok/s | Notes |
+|---|---:|---:|---|
+| Short explainer | 3 | 83.96 | saved in `gemma4-26b-mlx-20260702T003518Z.md` |
+| Coding-style prompt | 3 | 102.00 | saved in `gemma4-26b-mlx-20260702T004002Z.md` |
 
-Use this if you do not have a true non-MTP baseline:
+## Honest recording language
 
-> Ollama's public chart shows 95.0 tok/s with MTP versus 50.2 tok/s without MTP on Gemma 4 12B nvfp4 on an M5 Max. I can't claim a perfect before/after unless I can disable MTP or run an older Ollama build, so this lab measures what the current Ollama + MLX path gives me on my Mac.
+> I am testing `gemma4:26b-mlx` on my Mac. I am not presenting this as a perfect MTP-on versus MTP-off baseline or an exact recreation of Ollama's chart.
