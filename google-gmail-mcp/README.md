@@ -13,8 +13,24 @@ Status as of July 2026: Developer Preview (early-access program signup required)
 
 - A Google account with Gmail
 - A Google Cloud project (free to create)
+- The [gcloud CLI](https://cloud.google.com/sdk/docs/install) — optional; everything below can also be done in the Cloud Console UI
 - Enrollment in the [Google Workspace Developer Preview Program](https://developers.google.com/workspace/preview)
 - An MCP client — Google's docs cover **Claude** (claude.ai custom connector) and **Antigravity**; other clients can be wired manually if they support remote MCP with OAuth
+
+## Step 0 — Install the gcloud CLI (or skip and use the Console)
+
+If you don't have `gcloud` yet:
+
+```bash
+# macOS
+brew install --cask gcloud-cli
+
+# then authenticate and pick your project
+gcloud auth login
+gcloud config set project YOUR_PROJECT_ID
+```
+
+Other platforms: https://cloud.google.com/sdk/docs/install. If you'd rather not install anything, every `gcloud` step below has a Cloud Console equivalent — just search the API name in the [API Library](https://console.cloud.google.com/apis/library).
 
 ## Step 1 — Enable the APIs
 
