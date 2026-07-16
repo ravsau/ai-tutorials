@@ -101,12 +101,31 @@ That's it. No send, no delete, no archive-as-such (labels can get you close), no
 
 ## Automations that actually work (demo prompts)
 
-See [demo-prompts.md](demo-prompts.md) for the full copy-paste set. The four patterns that map cleanly onto the 10 tools:
+See [demo-prompts.md](demo-prompts.md) for the full copy-paste set. The five patterns that map cleanly onto the 10 tools:
 
 1. **Inbox triage + auto-labeling** — search unread mail, classify, apply labels like `Action Needed` / `FYI` / `Newsletter`.
 2. **Draft replies for review** — find threads waiting on your reply, draft a response for each, leave them in Drafts for you to review and send.
 3. **Thread digests** — summarize everything that happened in your inbox this week, grouped by project or sender.
 4. **Follow-up detection** — find sent threads with no reply after N days and draft polite nudges.
+5. **Smart spam rescue** — read what's sitting in Spam, decide keep-or-rescue per message with a reason, and pull the false positives back to the inbox by removing the `SPAM` label. The recruiter and the invoice get rescued; the "you won a gift card" scam stays put. This is the strongest live demo beat because it shows judgment, not a blanket rule.
+
+## Seed a demo inbox (for testing or recording)
+
+To show triage or spam-rescue convincingly, you need a demo inbox that actually looks lived-in: receipts, a recruiter, an invoice, newsletters, a real calendar invite, and a couple of obvious scams. A fresh empty inbox demos nothing.
+
+The official server can't send, so you seed the inbox from a **separate** path — a community server or a small local script using the send-only `gmail.send` scope. A repeatable setup that works well:
+
+- Send **12–17 messages** across distinct categories (actionable, finance, receipt, travel, newsletter, recruiter, support, personal, promo). Variety is what makes triage look smart.
+- Use **free-form display names** ("Acme Store", "SkyRoute Airlines") so the inbox looks multi-sender even though the envelope address is one account.
+- Include one **real calendar invite** (an `.ics` part with `METHOD:REQUEST`) so Gmail renders Accept/Decline.
+- Include one **obvious scam** ("you won a $1,000 gift card") so the spam-rescue demo has something it should correctly *keep* in Spam.
+- Keep everything **clearly fictional**: made-up brands, `example.com` links, no real-bank impersonation, no phishing, low volume. That stays inside Gmail's terms.
+
+Safety for the sending account:
+
+- The `gmail.send` scope is **send-only**. It cannot read the sender's inbox, so it never touches your access codes.
+- Send from a demo or throwaway account, not your main.
+- **Revoke when done:** delete the local token file, then revoke the grant at `https://oauth2.googleapis.com/revoke?token=<refresh_token>` or remove the app at [myaccount.google.com/permissions](https://myaccount.google.com/permissions).
 
 ## Gotchas (as of July 2026)
 
@@ -116,17 +135,26 @@ See [demo-prompts.md](demo-prompts.md) for the full copy-paste set. The four pat
 - **Token refresh:** preview users report needing to re-auth roughly every 7 days. Expect to redo the Google sign-in periodically.
 - **Docs and Sheets are not in the official suite.** Only Gmail, Drive, Calendar, Chat, and People have official servers; anything offering Docs/Sheets MCP is community-built.
 
-## Official vs community Gmail MCP servers
+## Three ways to connect Claude to Gmail
 
-| | Google official | Community (e.g. Python gmail-mcp) |
-|---|---|---|
-| Where it runs | Google's servers (remote) | Your machine |
-| Auth | OAuth, your own Cloud project | Usually OAuth with your own credentials too |
-| Can send email | **No** | Usually yes |
-| Maintenance | Google | Repo owner |
-| Trust surface | Google-hosted, scoped read+compose | Full API access you grant it |
+There are actually three paths, and it's easy to mix them up:
 
-If you need auto-send, you need a community server (and you're accepting that risk). If you want safe inbox automation with a review step, the official server is the cleaner setup.
+| | Google official | claude.ai built-in connector | Community (e.g. Python gmail-mcp) |
+|---|---|---|---|
+| Who runs it | Google (remote) | Anthropic (remote) | Your machine |
+| Setup | OAuth + your own Cloud project + preview enrollment | One toggle in claude.ai settings | Clone, configure, run |
+| Auth | OAuth, your own Cloud project | OAuth handled by Anthropic | Usually your own OAuth credentials |
+| Can send email | **No** | **No** (read, label, draft) | Usually yes |
+| Maintenance | Google | Anthropic | Repo owner |
+| Trust surface | Google-hosted, scoped read+compose | Anthropic-hosted, read+label+draft | Full API access you grant it |
+
+- **Fastest to demo:** the claude.ai built-in connector. Zero Cloud setup, and it's already MCP under the hood.
+- **Best "it's Google's own standard" story:** the official server (this guide).
+- **Only path that can auto-send:** a community server, and you accept the risk.
+
+### Safety: connect to a demo account, not your main
+
+Every read-capable connector can see **everything** in the mailbox it's linked to, including one-time codes and password resets. When you're recording or testing, link the connector to a throwaway demo inbox, never your primary account. If you already connected your main and want out: disconnect it in the client, then remove the app at [myaccount.google.com/permissions](https://myaccount.google.com/permissions).
 
 ## FAQ
 

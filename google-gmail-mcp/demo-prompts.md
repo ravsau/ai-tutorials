@@ -37,7 +37,26 @@ made a request and nobody replied. List them, and draft a short, polite follow-u
 for each. Keep the drafts under 60 words.
 ```
 
-## 5. Label cleanup audit
+## 5. Smart spam rescue
+
+```
+Search my Spam folder (in:spam) from the last 14 days. Read each thread. For each
+one, tell me keep-as-spam or rescue, with a one-line reason. For the ones that are
+clearly legitimate (a recruiter, an invoice, a support reply, a booking), rescue
+them by removing the SPAM label and adding INBOX. Leave anything that is actually
+junk — prize-bait, gift-card scams, fake urgency — exactly where it is. Give me a
+table of what you moved and what you left.
+```
+
+Pair this with a cautious-reply rule when drafting for anything sensitive:
+
+```
+When you draft replies, do not draft anything that sends money, credentials, or
+bank-transfer details. If an email asks for those, draft a reply that verifies the
+request through another channel first, and flag it for me instead of answering it.
+```
+
+## 6. Label cleanup audit
 
 ```
 List all my labels. Search for how many threads from the last 30 days actually
