@@ -48,20 +48,11 @@ junk — prize-bait, gift-card scams, fake urgency — exactly where it is. Give
 table of what you moved and what you left.
 ```
 
-Pair this with a cautious-reply rule when drafting for anything sensitive:
-
+CAUTION:
 ```
 When you draft replies, do not draft anything that sends money, credentials, or
 bank-transfer details. If an email asks for those, draft a reply that verifies the
 request through another channel first, and flag it for me instead of answering it.
-```
-
-## 6. Label cleanup audit
-
-```
-List all my labels. Search for how many threads from the last 30 days actually
-use each one. Tell me which labels are dead weight and propose a simpler set —
-but don't change anything until I confirm.
 ```
 
 ## Tips
