@@ -1,0 +1,15 @@
+# ~/.hermes/config.yaml — Kimi K3 via OpenRouter
+# Key goes in ~/.hermes/.env as OPENROUTER_API_KEY=sk-or-...
+
+model:
+  provider: openrouter
+  default: moonshotai/kimi-k3
+
+fallback_providers:
+  - provider: openrouter
+    model: ~anthropic/claude-sonnet-latest
+
+auxiliary:
+  title:
+    provider: openrouter
+    model: ~google/gemini-flash-latest
