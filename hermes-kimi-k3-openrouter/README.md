@@ -23,7 +23,14 @@ echo 'OPENROUTER_API_KEY=sk-or-...' >> ~/.hermes/.env
 
 ### 3. Configure Kimi K3
 
-`hermes config edit` and set (see [config.yaml](config.yaml) in this folder):
+Back up your existing config, then copy the [config.yaml](config.yaml) from this folder — no editor needed:
+
+```bash
+cp ~/.hermes/config.yaml ~/.hermes/config.yaml.backup 2>/dev/null
+curl -fsSL https://raw.githubusercontent.com/ravsau/ai-tutorials/main/hermes-kimi-k3-openrouter/config.yaml -o ~/.hermes/config.yaml
+```
+
+Want to look at it first? `open ~/.hermes/config.yaml` (TextEdit) or `code ~/.hermes/config.yaml` (VS Code). It's just this:
 
 ```yaml
 model:
