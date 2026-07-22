@@ -30,14 +30,12 @@ model:
   provider: openrouter
   default: moonshotai/kimi-k3
 
-fallback_providers:
-  - provider: openrouter
-    model: ~anthropic/claude-sonnet-latest
+fallback_model:
+  provider: openrouter
+  model: anthropic/claude-sonnet-4
 
-auxiliary:
-  title:
-    provider: openrouter
-    model: ~google/gemini-flash-latest
+display:
+  show_cost: true
 ```
 
 ### 4. Launch

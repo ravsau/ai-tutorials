@@ -1,15 +1,16 @@
-# ~/.hermes/config.yaml — Kimi K3 via OpenRouter
-# Key goes in ~/.hermes/.env as OPENROUTER_API_KEY=sk-or-...
+# Hermes Agent config — Kimi K3 via OpenRouter
+# Copy to ~/.hermes/config.yaml
+# API key goes in ~/.hermes/.env as: OPENROUTER_API_KEY=sk-or-...
 
 model:
   provider: openrouter
   default: moonshotai/kimi-k3
 
-fallback_providers:
-  - provider: openrouter
-    model: ~anthropic/claude-sonnet-latest
+# Automatic failover if K3's provider has issues (rate limits, outages)
+fallback_model:
+  provider: openrouter
+  model: anthropic/claude-sonnet-4
 
-auxiliary:
-  title:
-    provider: openrouter
-    model: ~google/gemini-flash-latest
+display:
+  personality: helpful
+  show_cost: true
