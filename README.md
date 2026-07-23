@@ -7,6 +7,7 @@ Code, configs, and guides that accompany [CloudYeti](https://www.youtube.com/@Cl
 | Tutorial | Video | What you get |
 |----------|-------|--------------|
 | [Hermes Agent + Kimi K3 via OpenRouter](hermes-kimi-k3-openrouter/) | [Watch](https://youtu.be/_O0kXhADDrI) | Run Kimi K3 (the #1 frontend model) in Hermes Agent through OpenRouter. Config, redesign prompt, gotchas, pricing. |
+| [OpenCode + OpenRouter: One Coding Agent, Every Model](opencode-openrouter/) | Coming soon | Plug OpenCode into OpenRouter: one key, many models, routing + fallback. Curated `opencode.json` menu, the same-task model comparison, gotchas. |
 | [Google's Official Gmail MCP](google-gmail-mcp/) | Coming soon | Setup for Google's hosted Gmail MCP server (draft-only, 10 tools). OAuth walkthrough, 5 automation prompts, gotchas, FAQ. |
 | [OpenAI Codex /goal — The Ralph Loop](codex-goal-ralph-loop/) | Coming soon | OpenAI just shipped `/goal` (Codex CLI 0.128.0). Setup, the Ralph backstory (Geoffrey Huntley → Eric Traut), 7 ready-to-copy goal prompts, FAQ. |
 | [Pi + Qwen 3.6 Local Coding Agent](pi-qwen-local-agent/) | Coming soon | Is Pi the agent for local coding? Setup, configs, demo prompts, FAQ. Tested on M3 Mac with Qwen 3.6 27B. |
