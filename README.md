@@ -4,7 +4,7 @@ Code, configs, and guides that accompany [CloudYeti](https://www.youtube.com/@Cl
 
 [![AI Tutorials playlist on YouTube](assets/playlist-banner.png)](https://www.youtube.com/playlist?list=PLNRdgLY8jKxk)
 
-**[▶ Watch 35+ tutorials on YouTube](https://www.youtube.com/playlist?list=PLNRdgLY8jKxk)** · **[Structured courses at cloudyeti.io/courses](https://cloudyeti.io/courses)**
+**[📚 Courses — cloudyeti.io/courses](https://cloudyeti.io/courses)** · **[🎓 Practice AI certs for free — learn.cloudyeti.io](https://learn.cloudyeti.io)** · **[▶ Watch 35+ tutorials](https://www.youtube.com/playlist?list=PLNRdgLY8jKxk)**
 
 > Want a tutorial that is not here yet? [**Open an issue and request it.**](https://github.com/ravsau/ai-tutorials/issues/new?labels=tutorial-request&title=Tutorial%20request%3A%20)
 
@@ -122,6 +122,6 @@ Bigger multi-part repos kept separate so each one can stand alone:
 - [CloudYeti Courses](https://cloudyeti.io/courses) — structured, multi-part paths
 - [YouTube](https://www.youtube.com/@CloudYeti) — $0 AI setups, local models, Claude Code workflows
 - [1:1 Consultation](https://cloudyeti.io/meet) — hands-on help with your AI setup
-- [Briefly](https://briefly.givingback.ai) — free YouTube growth report for creators
+- [Practice AI certs free](https://learn.cloudyeti.io) — question bank for AI/ML certification prep
 
 Built by [CloudYeti](https://cloudyeti.io)
