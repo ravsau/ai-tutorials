@@ -1,0 +1,83 @@
+{
+  "model": "gemma4:26b-mlx",
+  "created_at": "20260702T032156Z",
+  "runs_per_prompt": 3,
+  "prompts": {
+    "short": "Explain multi-token prediction in practical terms for someone running local AI on a Mac. Keep it under 180 words.",
+    "coding": "Write a Python function called summarize_results(rows) that accepts a list of dicts with keys model, run, eval_tokens, eval_tok_s, and total_s. It should return a markdown table sorted by eval_tok_s descending. Include a tiny example input and output."
+  },
+  "rows": [
+    {
+      "prompt_name": "short",
+      "model": "gemma4:26b-mlx",
+      "run": 1,
+      "eval_tokens": 256,
+      "decode_tok_s": 78.16179436414802,
+      "prompt_tok_s": 211.27048456611013,
+      "ollama_total_s": 3.53920775,
+      "wall_s": 3.543290374800563,
+      "done_reason": "length",
+      "response_preview": ""
+    },
+    {
+      "prompt_name": "short",
+      "model": "gemma4:26b-mlx",
+      "run": 2,
+      "eval_tokens": 256,
+      "decode_tok_s": 80.67987607917705,
+      "prompt_tok_s": 42000000.0,
+      "ollama_total_s": 3.212235166,
+      "wall_s": 3.215332542080432,
+      "done_reason": "length",
+      "response_preview": ""
+    },
+    {
+      "prompt_name": "short",
+      "model": "gemma4:26b-mlx",
+      "run": 3,
+      "eval_tokens": 256,
+      "decode_tok_s": 80.8722322979055,
+      "prompt_tok_s": 50420168.06722689,
+      "ollama_total_s": 3.200074625,
+      "wall_s": 3.2031284999102354,
+      "done_reason": "length",
+      "response_preview": ""
+    },
+    {
+      "prompt_name": "coding",
+      "model": "gemma4:26b-mlx",
+      "run": 1,
+      "eval_tokens": 256,
+      "decode_tok_s": 80.95334901198375,
+      "prompt_tok_s": 485.89729813069704,
+      "ollama_total_s": 3.35874625,
+      "wall_s": 3.361599582945928,
+      "done_reason": "length",
+      "response_preview": ""
+    },
+    {
+      "prompt_name": "coding",
+      "model": "gemma4:26b-mlx",
+      "run": 2,
+      "eval_tokens": 256,
+      "decode_tok_s": 79.72497271180796,
+      "prompt_tok_s": 81334723.67049009,
+      "ollama_total_s": 3.248038833,
+      "wall_s": 3.2507583340629935,
+      "done_reason": "length",
+      "response_preview": ""
+    },
+    {
+      "prompt_name": "coding",
+      "model": "gemma4:26b-mlx",
+      "run": 3,
+      "eval_tokens": 256,
+      "decode_tok_s": 79.65623768142343,
+      "prompt_tok_s": 93525179.85611512,
+      "ollama_total_s": 3.253334375,
+      "wall_s": 3.2561229588463902,
+      "done_reason": "length",
+      "response_preview": ""
+    }
+  ]
+}

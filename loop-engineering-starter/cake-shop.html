@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sweet Layers — Cake Shop</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: #fff8f5;
+      color: #3a1a2e;
+    }
+
+    header {
+      background: #7d2d5a;
+      color: #fff8f5;
+      text-align: center;
+      padding: 2.5rem 1rem;
+    }
+
+    header h1 { font-size: 3rem; letter-spacing: 3px; }
+    header p  { font-size: 1.05rem; color: #f5bcd8; margin-top: 0.4rem; }
+
+    nav {
+      background: #5c1e3f;
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      padding: 0.85rem;
+    }
+
+    nav a {
+      color: #fff8f5;
+      text-decoration: none;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    nav a:hover { color: #f5bcd8; }
+
+    .hero {
+      background: linear-gradient(135deg, #7d2d5a 0%, #c4668a 100%);
+      color: #fff8f5;
+      text-align: center;
+      padding: 5rem 2rem;
+    }
+
+    .hero h2 { font-size: 2.4rem; margin-bottom: 1rem; }
+    .hero p   { font-size: 1.1rem; color: #fce0ec; max-width: 500px; margin: 0 auto 2rem; line-height: 1.7; }
+
+    .btn {
+      background: #f5bcd8;
+      color: #3a1a2e;
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: 30px;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: inherit;
+      font-weight: bold;
+    }
+
+    .btn:hover { background: #f0a0c8; }
+
+    section { padding: 4rem 2rem; max-width: 1000px; margin: 0 auto; }
+
+    h2.section-title {
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      color: #7d2d5a;
+    }
+
+    .cakes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .cake-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.75rem 1.25rem;
+      text-align: center;
+      box-shadow: 0 3px 12px rgba(125,45,90,0.1);
+      transition: transform 0.2s;
+    }
+
+    .cake-card:hover { transform: translateY(-4px); }
+
+    .cake-card .icon { font-size: 2.8rem; margin-bottom: 0.6rem; }
+    .cake-card h3   { font-size: 1.05rem; margin-bottom: 0.3rem; color: #3a1a2e; }
+    .cake-card p    { font-size: 0.88rem; color: #8a5070; margin-bottom: 0.6rem; line-height: 1.5; }
+    .cake-card .price { font-weight: bold; color: #7d2d5a; font-size: 1rem; }
+
+    .about-box {
+      background: #fce8f0;
+      border-radius: 16px;
+      padding: 3rem 2.5rem;
+      text-align: center;
+    }
+
+    .about-box p { max-width: 600px; margin: 0 auto; line-height: 1.85; color: #5c1e3f; font-size: 1.05rem; }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .info-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 2px 8px rgba(125,45,90,0.08);
+    }
+
+    .info-box h3 { color: #7d2d5a; margin-bottom: 1rem; font-size: 1.1rem; }
+    .info-box p, .info-box li { color: #5c1e3f; font-size: 0.95rem; line-height: 1.8; }
+    .info-box ul { list-style: none; }
+    .info-box ul li::before { content: "✦ "; color: #c4668a; }
+
+    footer {
+      background: #3a1a2e;
+      color: #f5bcd8;
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Sweet Layers</h1>
+  <p>Handcrafted cakes baked with love</p>
+</header>
+
+<nav>
+  <a href="#cakes">Cakes</a>
+  <a href="#about">About</a>
+  <a href="#info">Visit Us</a>
+</nav>
+
+<div class="hero">
+  <h2>Every slice tells a story.</h2>
+  <p>Celebration cakes, custom orders, and everyday treats — all made fresh from scratch in our Brooklyn kitchen.</p>
+  <a class="btn" href="#cakes">Explore Our Cakes</a>
+</div>
+
+<section id="cakes">
+  <h2 class="section-title">Our Cakes</h2>
+  <div class="cakes-grid">
+    <div class="cake-card">
+      <div class="icon">🎂</div>
+      <h3>Classic Birthday Cake</h3>
+      <p>Vanilla sponge, buttercream frosting, rainbow sprinkles</p>
+      <span class="price">from $45</span>
+    </div>
+    <div class="cake-card">
+      <div class="icon">🍫</div>
+      <h3>Triple Chocolate</h3>
+      <p>Dark, milk & white chocolate ganache layers</p>
+      <span class="price">from $52</span>
+    </div>
+    <div class="cake-card">
+      <div class="icon">🍓</div>
+      <h3>Strawberry Shortcake</h3>
+      <p>Fresh strawberries & whipped cream on chiffon</p>
+      <span class="price">from $48</span>
+    </div>
+    <div class="cake-card">
+      <div class="icon">🍋</div>
+      <h3>Lemon Drizzle</h3>
+      <p>Zesty lemon curd & elderflower glaze</p>
+      <span class="price">from $44</span>
+    </div>
+    <div class="cake-card">
+      <div class="icon">🌹</div>
+      <h3>Red Velvet</h3>
+      <p>Cream cheese frosting, cocoa-red sponge</p>
+      <span class="price">from $50</span>
+    </div>
+    <div class="cake-card">
+      <div class="icon">✨</div>
+      <h3>Custom Creation</h3>
+      <p>Design your dream cake — any flavor, any occasion</p>
+      <span class="price">from $65</span>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="about-box">
+    <h2 class="section-title">Our Story</h2>
+    <p>
+      Sweet Layers started in 2019 as a home bakery on a single oven and a dream. Today we operate a
+      full kitchen in Brooklyn, crafting cakes for birthdays, weddings, and every quiet Tuesday in
+      between. Everything is made from scratch using locally sourced butter, free-range eggs, and
+      real vanilla — because the best ingredients make the best memories.
+    </p>
+  </div>
+</section>
+
+<section id="info">
+  <h2 class="section-title">Visit Us</h2>
+  <div class="info-grid">
+    <div class="info-box">
+      <h3>Hours</h3>
+      <ul>
+        <li>Mon – Fri: 9 am – 7 pm</li>
+        <li>Saturday: 9 am – 8 pm</li>
+        <li>Sunday: 10 am – 5 pm</li>
+      </ul>
+    </div>
+    <div class="info-box">
+      <h3>Location &amp; Contact</h3>
+      <p>456 Baker Street<br />Brooklyn, NY 11215</p>
+      <p style="margin-top:0.75rem;">📞 (718) 555-0192<br />✉️ hello@sweetlayers.com</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 Sweet Layers Cake Shop · Baked with love in Brooklyn 🎂</p>
+</footer>
+
+</body>
+</html>

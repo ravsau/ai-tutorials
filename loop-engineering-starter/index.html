@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brew & Co. Coffee Shop</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: #faf6f1;
+      color: #2c1a0e;
+    }
+
+    header {
+      background: #2c1a0e;
+      color: #faf6f1;
+      text-align: center;
+      padding: 2.5rem 1rem;
+    }
+
+    header h1 { font-size: 3rem; letter-spacing: 2px; }
+    header p  { font-size: 1.1rem; color: #c9a97a; margin-top: 0.4rem; }
+
+    nav {
+      background: #4a2e1a;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 0.8rem;
+    }
+
+    nav a {
+      color: #faf6f1;
+      text-decoration: none;
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    nav a:hover { color: #c9a97a; }
+
+    .hero {
+      background: linear-gradient(135deg, #2c1a0e 0%, #7b4f2e 100%);
+      color: #faf6f1;
+      text-align: center;
+      padding: 5rem 2rem;
+    }
+
+    .hero h2 { font-size: 2.4rem; margin-bottom: 1rem; }
+    .hero p   { font-size: 1.15rem; color: #d4b896; max-width: 520px; margin: 0 auto 2rem; }
+
+    .btn {
+      background: #c9a97a;
+      color: #2c1a0e;
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: inherit;
+    }
+
+    .btn:hover { background: #b8905c; }
+
+    section { padding: 4rem 2rem; max-width: 1000px; margin: 0 auto; }
+
+    h2.section-title {
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      color: #4a2e1a;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .menu-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .menu-card .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .menu-card h3   { font-size: 1.1rem; margin-bottom: 0.3rem; color: #2c1a0e; }
+    .menu-card p    { font-size: 0.9rem; color: #7b6250; margin-bottom: 0.5rem; }
+    .menu-card .price { font-weight: bold; color: #4a2e1a; }
+
+    .about {
+      background: #f0e6d3;
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .about p { max-width: 600px; margin: 0 auto; line-height: 1.8; color: #4a2e1a; }
+
+    .hours-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      max-width: 360px;
+      margin: 1.5rem auto 0;
+      font-size: 0.95rem;
+    }
+
+    .hours-grid span:nth-child(odd)  { font-weight: bold; color: #4a2e1a; }
+    .hours-grid span:nth-child(even) { color: #7b6250; }
+
+    footer {
+      background: #2c1a0e;
+      color: #c9a97a;
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Brew &amp; Co.</h1>
+  <p>Specialty coffee roasted with love</p>
+</header>
+
+<nav>
+  <a href="#menu">Menu</a>
+  <a href="#about">About</a>
+  <a href="#hours">Hours</a>
+</nav>
+
+<div class="hero">
+  <h2>Your daily ritual, perfected.</h2>
+  <p>Single-origin beans, expert baristas, and a cozy corner waiting just for you.</p>
+  <a class="btn" href="#menu">See Our Menu</a>
+</div>
+
+<section id="menu">
+  <h2 class="section-title">Menu Highlights</h2>
+  <div class="menu-grid">
+    <div class="menu-card">
+      <div class="icon">☕</div>
+      <h3>Espresso</h3>
+      <p>Double shot, rich crema</p>
+      <span class="price">$3.50</span>
+    </div>
+    <div class="menu-card">
+      <div class="icon">🥛</div>
+      <h3>Latte</h3>
+      <p>Espresso &amp; steamed oat milk</p>
+      <span class="price">$5.00</span>
+    </div>
+    <div class="menu-card">
+      <div class="icon">🧊</div>
+      <h3>Cold Brew</h3>
+      <p>24-hour slow steep</p>
+      <span class="price">$5.50</span>
+    </div>
+    <div class="menu-card">
+      <div class="icon">🍵</div>
+      <h3>Matcha Latte</h3>
+      <p>Ceremonial grade matcha</p>
+      <span class="price">$5.50</span>
+    </div>
+    <div class="menu-card">
+      <div class="icon">🥐</div>
+      <h3>Butter Croissant</h3>
+      <p>Baked fresh each morning</p>
+      <span class="price">$3.75</span>
+    </div>
+    <div class="menu-card">
+      <div class="icon">🍫</div>
+      <h3>Mocha</h3>
+      <p>Dark chocolate &amp; espresso</p>
+      <span class="price">$5.50</span>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="about">
+    <h2 class="section-title">Our Story</h2>
+    <p>
+      Founded in 2018, Brew &amp; Co. was born from a simple belief: great coffee changes your day.
+      We source directly from small farms in Ethiopia, Colombia, and Guatemala, roasting in-house
+      every week to bring you the freshest cup possible. Come as you are — stay as long as you like.
+    </p>
+  </div>
+</section>
+
+<section id="hours">
+  <h2 class="section-title">Hours &amp; Location</h2>
+  <p style="text-align:center; color:#7b6250;">123 Main Street · Brooklyn, NY 11201</p>
+  <div class="hours-grid">
+    <span>Mon – Fri</span><span>7:00 am – 8:00 pm</span>
+    <span>Saturday</span><span>8:00 am – 9:00 pm</span>
+    <span>Sunday</span><span>9:00 am – 6:00 pm</span>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 Brew &amp; Co. · Made with ☕ in Brooklyn</p>
+</footer>
+
+</body>
+</html>

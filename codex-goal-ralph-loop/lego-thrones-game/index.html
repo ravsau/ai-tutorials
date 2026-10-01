@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Brick Throne: Gate Beneath the Red Keep</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="stage" aria-label="Brick fantasy adventure game">
+        <div class="topbar">
+          <div>
+            <p class="kicker">Brick Throne</p>
+            <h1 id="realmTitle">King's Landing</h1>
+          </div>
+          <div class="hud" aria-live="polite">
+            <div class="hud-item">
+              <span class="hud-label">Crowns</span>
+              <strong id="crownCount">0</strong>
+            </div>
+            <div class="hud-item">
+              <span class="hud-label">Hearts</span>
+              <strong id="heartCount">3</strong>
+            </div>
+            <button id="restartButton" class="icon-button" type="button" title="Restart" aria-label="Restart">
+              <span aria-hidden="true">↻</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="game-wrap">
+          <canvas id="game" width="960" height="640"></canvas>
+          <div id="toast" class="toast" role="status" aria-live="polite"></div>
+          <div id="startPanel" class="start-panel">
+            <p class="kicker">Secret passage detected</p>
+            <h2>The Red Keep has a door no guard admits exists.</h2>
+            <p>Find three crowns in King's Landing, open the brick-sealed wall, then cross into the frozen North and light the beacon.</p>
+            <button id="startButton" type="button">Enter King's Landing</button>
+          </div>
+          <div id="winPanel" class="start-panel hidden">
+            <p class="kicker">The Wall answers</p>
+            <h2>The northern beacon is lit.</h2>
+            <p>You found the secret door, crossed beyond the Wall, and finished the set.</p>
+            <button id="playAgainButton" type="button">Play Again</button>
+          </div>
+        </div>
+
+        <div class="control-strip" aria-label="Game controls">
+          <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>
+          <span>move</span>
+          <kbd>E</kbd>
+          <span>interact</span>
+          <kbd>Space</kbd>
+          <span>guard</span>
+        </div>
+      </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+    <script src="./game.js"></script>
+  </body>
+</html>
