@@ -1,0 +1,12 @@
+{
+  "providers": {
+    "llama-cpp": {
+      "baseUrl": "http://127.0.0.1:8080/v1",
+      "api": "openai-completions",
+      "apiKey": "none",
+      "models": [
+        { "id": "qwen3.8-flash-next", "contextWindow": 16384, "reasoning": true }
+      ]
+    }
+  }
+}

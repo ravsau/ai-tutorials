@@ -12,6 +12,7 @@ Code, configs, and guides that accompany [CloudYeti](https://www.youtube.com/@Cl
 
 | Tutorial | Video | What you get |
 |----------|-------|--------------|
+| [Qwen3.8-Flash-Next with llama.cpp](qwen3.8-flash-next-llamacpp/) | Coming soon | Run the 125B (6B active) Qwen model locally, step by step: pick the file for your RAM, one start script, chat page, speed test, OpenCode and Pi configs. |
 | [Hermes Agent + Kimi K3 via OpenRouter](hermes-kimi-k3-openrouter/) | [Watch](https://youtu.be/_O0kXhADDrI) | Run Kimi K3 (the #1 frontend model) in Hermes Agent through OpenRouter. Config, redesign prompt, gotchas, pricing. |
 | [OpenCode + OpenRouter: One Coding Agent, Every Model](opencode-openrouter/) | Coming soon | Plug OpenCode into OpenRouter: one key, many models, routing + fallback. Curated `opencode.json` menu, the same-task model comparison, gotchas. |
 | [Google's Official Gmail MCP](google-gmail-mcp/) | Coming soon | Setup for Google's hosted Gmail MCP server (draft-only, 10 tools). OAuth walkthrough, 5 automation prompts, gotchas, FAQ. |
