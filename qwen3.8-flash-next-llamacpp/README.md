@@ -96,17 +96,18 @@ cd ai-tutorials/qwen3.8-flash-next-llamacpp
 ```bash
 ./start.sh
 ```
-To choose the file yourself: `QUANT=UD-IQ3_XXS ./start.sh`. For more context: `CTX=32768 ./start.sh`.
+To choose the file yourself: `QUANT=UD-IQ3_XXS ./start.sh`. For less memory: `CTX=32768 ./start.sh`.
 
 The script runs this one command (you can also type it yourself):
 ```bash
 llama-server -hf unsloth/Qwen3.8-Flash-Next-GGUF:UD-IQ4_XS --alias qwen3.8-flash-next \
-  -c 16384 -ngl 99 -fa on --jinja --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0 \
+  -c 65536 -ngl 99 -fa on --jinja --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0 \
   --host 127.0.0.1 --port 8080
 ```
 What the flags do:
 - `-hf ...:UD-IQ4_XS` downloads that file from Hugging Face (all 4 parts) and loads it.
-- `-c 16384` is the context size. Bigger context uses more memory.
+- `-c 65536` is the context size. Coding agents need this much: their first prompt alone can be 2,000 to 20,000
+  tokens, and a one-file website is about 10,000 more. 16,384 is too small. Bigger context uses more memory.
 - `-ngl 99` puts all layers on the GPU. `-fa on` turns on flash attention (faster, less memory).
 - `--jinja` uses the model's own chat template, which tool calling needs.
 - `--temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0` are the sampling settings Unsloth recommends for thinking mode
@@ -207,6 +208,8 @@ with your GPU, RAM and speed.
 | Very slow, Memory Pressure is red | The file is too big for your RAM. Use the next smaller row in the table. |
 | Download stops | Run `./start.sh` again; it continues where it stopped. |
 | Faster output with MTP | MTP needs Unsloth's custom llama.cpp branch for now; see the MTP section of the [Unsloth guide](https://unsloth.ai/docs/models/qwen3.8-next). |
+| `exceeds the available context size (16384 tokens)` | The prompt does not fit. Stop the server (`Ctrl+C`), then `CTX=65536 ./start.sh`. In Pi, also use `-ne -ns -nc` to make the first prompt small. |
+| A new `CTX` has no effect (the error still says the old size) | An old server still runs on port 8080, so the new one could not start. Stop the old one with `Ctrl+C` in its terminal, then start again. Check with `curl -s http://127.0.0.1:8080/props \| grep -o '"n_ctx":[0-9]*'`. |
 | Port 8080 already in use | `PORT=8081 ./start.sh`, and change the port in `opencode.json` / `pi-models.json`. |
 
 ## Files in this folder

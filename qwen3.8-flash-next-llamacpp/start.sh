@@ -25,7 +25,7 @@ if [[ -z "${QUANT:-}" ]]; then
   fi
 fi
 
-CTX=${CTX:-16384}
+CTX=${CTX:-65536}
 PORT=${PORT:-8080}
 echo "RAM: ${RAM_GB} GB  |  file: ${QUANT}  |  context: ${CTX}  |  http://127.0.0.1:${PORT}"
 

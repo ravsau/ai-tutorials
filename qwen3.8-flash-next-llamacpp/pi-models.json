@@ -5,7 +5,7 @@
       "api": "openai-completions",
       "apiKey": "none",
       "models": [
-        { "id": "qwen3.8-flash-next", "contextWindow": 16384, "reasoning": true }
+        { "id": "qwen3.8-flash-next", "contextWindow": 65536, "reasoning": true }
       ]
     }
   }
