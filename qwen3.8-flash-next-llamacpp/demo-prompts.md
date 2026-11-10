@@ -6,7 +6,7 @@ Each one finishes in minutes on a local machine and gives a result you can see. 
 How to use them:
 - **Chat page** (http://127.0.0.1:8080): paste the prompt, then save the answer as the file it names and open it.
 - **Pi agent** (writes and runs the files for you), in an empty folder:
-  `mkdir demo && cd demo && pi -ne -ns -nc --provider llama-cpp --model qwen3.8-flash-next`
+  `mkdir demo && cd demo && pi -ne -ns -nc --provider llama-cpp-flash-next --model qwen3.8-flash-next`
 
 Tips that make one-shot prompts work better on local models (from r/LocalLLaMA replies):
 say the output first ("a single file called X"), forbid external libraries, and keep one task per prompt.

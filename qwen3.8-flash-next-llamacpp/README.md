@@ -154,12 +154,25 @@ cd /path/to/your/project && opencode
 Then pick the model "Qwen3.8 Flash Next (local)" with `/models`.
 
 **Pi:**
+Install Pi only if you do not have it. When the installer asks `Start pi now? [Y/n]`, answer `n`: that starts Pi
+with your default provider (a cloud model if you set one), not the local model.
 ```bash
 curl -fsSL https://pi.dev/install.sh | sh
-mkdir -p ~/.pi/agent && cp pi-models.json ~/.pi/agent/models.json   # careful: this replaces an existing file
-pi -ne -ns -nc --provider llama-cpp --model qwen3.8-flash-next
 ```
-If you already have `~/.pi/agent/models.json`, copy only the `llama-cpp` block into it.
+Then:
+```bash
+cd ai-tutorials/qwen3.8-flash-next-llamacpp       # the folder you cloned in Step 4
+python3 add-to-pi.py                              # adds one provider, keeps yours, saves models.json.bak
+mkdir -p ~/qwen-demo && cd ~/qwen-demo            # an empty folder for the agent to work in
+pi -ne -ns -nc --provider llama-cpp-flash-next --model qwen3.8-flash-next
+```
+The provider has its own name (`llama-cpp-flash-next`), so it does not clash with a `llama-cpp` provider you
+already have. If Pi says `Connection error`, the provider points at a port where no server runs: check that
+`start.sh` is still running in the first terminal.
+
+**Check that Pi uses the local model:** the bottom right of Pi must show `(llama-cpp-flash-next) qwen3.8-flash-next`,
+and the bottom left must show no `$` cost. If you see another provider or a cost, you are on a cloud model: exit
+and start Pi again with the flags above.
 
 Why `-ne -ns -nc`: they turn off extensions, skills and AGENTS.md/CLAUDE.md files for this run. Pi's own prompt is
 small, but installed extensions and skills are added to every first prompt. In my test, the first prompt was 19,567
@@ -189,6 +202,7 @@ with your GPU, RAM and speed.
 | Problem | Fix |
 |---|---|
 | `unknown model architecture` | Your llama.cpp is too old. Do Step 2 again. |
+| `has invalid ggml type 42` / `failed to read tensor info` | Your llama.cpp is too old for the new 2-bit type in this file (Homebrew build 9878 fails). Build from source (end of Step 2). The file is fine; do not download it again. |
 | Crash or "failed to allocate" when loading | Do Step 3, or use a smaller file (`QUANT=UD-IQ3_XXS`), or a smaller context (`CTX=8192`). |
 | Very slow, Memory Pressure is red | The file is too big for your RAM. Use the next smaller row in the table. |
 | Download stops | Run `./start.sh` again; it continues where it stopped. |
@@ -202,6 +216,7 @@ with your GPU, RAM and speed.
 | `start.sh` | Picks the file from your RAM and starts `llama-server` |
 | `opencode.json` | OpenCode config for the local server |
 | `pi-models.json` | Pi config for the local server |
+| `add-to-pi.py` | Adds `pi-models.json` to `~/.pi/agent/models.json` without removing your other providers |
 | `demo-prompts.md` | 8 prompts to push the model (from DataCamp, Simon Willison, r/LocalLLaMA, and mine), with a score sheet |
 | `long-prompt-test.py` | Reading-speed test with a hidden code (Python standard library only) |
 
