@@ -33,5 +33,6 @@ exec llama-server \
   -hf "unsloth/Qwen3.8-Flash-Next-GGUF:${QUANT}" \
   --alias qwen3.8-flash-next \
   -c "${CTX}" -ngl 99 -fa on --jinja \
+  --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0 \
   --host 127.0.0.1 --port "${PORT}" \
   "$@"

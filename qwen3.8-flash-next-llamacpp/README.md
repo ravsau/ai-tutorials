@@ -61,7 +61,14 @@ Linux / Windows: download a release build from [github.com/ggml-org/llama.cpp/re
 ```bash
 llama-server --version
 ```
-The model is new. Old builds fail later with an "unknown model architecture" error. If you see that, update again.
+The model is new. Unsloth says to use the latest llama.cpp. Old builds fail later with an "unknown model architecture"
+error. If Homebrew does not have a new enough build yet, build it from source (Mac, about 5 minutes):
+```bash
+git clone https://github.com/ggml-org/llama.cpp
+cmake llama.cpp -B llama.cpp/build -DBUILD_SHARED_LIBS=OFF
+cmake --build llama.cpp/build --config Release -j --target llama-server llama-cli
+export PATH="$PWD/llama.cpp/build/bin:$PATH"
+```
 
 ## Step 3 (Mac only): Let the GPU use more of your memory (30 seconds)
 
@@ -94,13 +101,16 @@ To choose the file yourself: `QUANT=UD-IQ3_XXS ./start.sh`. For more context: `C
 The script runs this one command (you can also type it yourself):
 ```bash
 llama-server -hf unsloth/Qwen3.8-Flash-Next-GGUF:UD-IQ4_XS --alias qwen3.8-flash-next \
-  -c 16384 -ngl 99 -fa on --jinja --host 127.0.0.1 --port 8080
+  -c 16384 -ngl 99 -fa on --jinja --temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0 \
+  --host 127.0.0.1 --port 8080
 ```
 What the flags do:
 - `-hf ...:UD-IQ4_XS` downloads that file from Hugging Face (all 4 parts) and loads it.
 - `-c 16384` is the context size. Bigger context uses more memory.
 - `-ngl 99` puts all layers on the GPU. `-fa on` turns on flash attention (faster, less memory).
 - `--jinja` uses the model's own chat template, which tool calling needs.
+- `--temp 1.0 --top-p 0.95 --top-k 20 --min-p 0.0` are the sampling settings Unsloth recommends for thinking mode
+  ([Unsloth guide](https://unsloth.ai/docs/models/qwen3.8-next)).
 
 The download is large. At 50 MB/s, 94 GB takes about 30 minutes. If it stops, run `./start.sh` again and it continues.
 
@@ -124,6 +134,13 @@ curl -s http://127.0.0.1:8080/v1/chat/completions \
 Watch memory while it runs: Mac: Activity Monitor > Memory (look at "Memory Pressure", green is fine).
 Linux: `watch -n 1 free -g`.
 
+## Step 7b: Measure the reading speed (2-6 minutes)
+
+Coding agents send a long prompt before the model writes anything, so reading speed matters as much as writing speed:
+```bash
+python3 long-prompt-test.py              # about 20,000 tokens, with a hidden code to check recall
+```
+
 ## Step 8: Use it from a coding agent (5 minutes)
 
 The server is OpenAI-compatible at `http://127.0.0.1:8080/v1`, so any agent that accepts a custom endpoint works.
@@ -140,9 +157,14 @@ Then pick the model "Qwen3.8 Flash Next (local)" with `/models`.
 ```bash
 curl -fsSL https://pi.dev/install.sh | sh
 mkdir -p ~/.pi/agent && cp pi-models.json ~/.pi/agent/models.json   # careful: this replaces an existing file
-pi --provider llama-cpp --model qwen3.8-flash-next
+pi -ne -ns -nc --provider llama-cpp --model qwen3.8-flash-next
 ```
 If you already have `~/.pi/agent/models.json`, copy only the `llama-cpp` block into it.
+
+Why `-ne -ns -nc`: they turn off extensions, skills and AGENTS.md/CLAUDE.md files for this run. Pi's own prompt is
+small, but installed extensions and skills are added to every first prompt. In my test, the first prompt was 19,567
+tokens with my extensions and 1,684 tokens without them, and the same small task took 6:27 vs 1:10 on a local 27B model.
+A local model reads the prompt much slower than a cloud model, so keep it lean.
 
 **Check:** give the agent a small task, like "create hello.py that prints the date", and see the file appear.
 
@@ -170,6 +192,7 @@ with your GPU, RAM and speed.
 | Crash or "failed to allocate" when loading | Do Step 3, or use a smaller file (`QUANT=UD-IQ3_XXS`), or a smaller context (`CTX=8192`). |
 | Very slow, Memory Pressure is red | The file is too big for your RAM. Use the next smaller row in the table. |
 | Download stops | Run `./start.sh` again; it continues where it stopped. |
+| Faster output with MTP | MTP needs Unsloth's custom llama.cpp branch for now; see the MTP section of the [Unsloth guide](https://unsloth.ai/docs/models/qwen3.8-next). |
 | Port 8080 already in use | `PORT=8081 ./start.sh`, and change the port in `opencode.json` / `pi-models.json`. |
 
 ## Files in this folder
@@ -179,6 +202,8 @@ with your GPU, RAM and speed.
 | `start.sh` | Picks the file from your RAM and starts `llama-server` |
 | `opencode.json` | OpenCode config for the local server |
 | `pi-models.json` | Pi config for the local server |
+| `demo-prompts.md` | 8 prompts to push the model (from DataCamp, Simon Willison, r/LocalLLaMA, and mine), with a score sheet |
+| `long-prompt-test.py` | Reading-speed test with a hidden code (Python standard library only) |
 
 ---
 
